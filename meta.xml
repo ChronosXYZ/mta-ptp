@@ -1,0 +1,11 @@
+<meta>
+     <info author="ChronosX88" type="gamemode" name="PTP" description="Classic Protect The President Mode" />
+     <script src="util\class.lua" type="shared"/>
+     <script src="util\color.lua" type="shared"/>
+     <script src="enums.lua" type="shared"/>
+     <script src="team.lua" type="shared"/>
+     <script src="server.lua" type="server"/>
+     <script src="client.lua" type="client"/>
+     <script src="gui\dxbutton.lua" type="client"/>
+     <oop>true</oop>
+</meta>

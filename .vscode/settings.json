@@ -1,0 +1,38 @@
+{
+    "Lua.diagnostics.globals": [
+        "addEventHandler",
+        "getRootElement",
+        "outputChatBox",
+        "source",
+        "spawnPlayer",
+        "setCameraMatrix",
+        "fadeCamera",
+        "toggleAllControls",
+        "showCursor",
+        "setPlayerHudComponentVisible",
+        "guiGetScreenSize",
+        "root",
+        "dxDrawText",
+        "dxDrawRectangle",
+        "tocolor",
+        "guiCreateLabel",
+        "resourceRoot",
+        "guiGetText",
+        "guiSetAlpha",
+        "bitExtract",
+        "destroyElement",
+        "removeEventHandler",
+        "outputDebugString",
+        "addEvent",
+        "triggerClientEvent",
+        "aclGetGroup",
+        "aclGroupAddObject",
+        "setElementModel",
+        "localPlayer",
+        "bindKey",
+        "setCameraTarget"
+    ],
+    "Lua.diagnostics.disable": [
+        "lowercase-global"
+    ]
+}
