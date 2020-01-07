@@ -1,5 +1,5 @@
 Teams = {
-    SECRET_SERVICE = "secret_service",
-    POLICE = "police",
-    TERRORISTS = "terrorists"
+    SECRET_SERVICE = "Secret Service",
+    POLICE = "Police",
+    TERRORISTS = "Terrorists"
 }

@@ -30,7 +30,17 @@
         "setElementModel",
         "localPlayer",
         "bindKey",
-        "setCameraTarget"
+        "setCameraTarget",
+        "createTeam",
+        "setElementData",
+        "setPlayerTeam",
+        "setTimer",
+        "getTeamFromName",
+        "respawnVehicle",
+        "getPlayerTeam",
+        "getTeamName",
+        "getElementData",
+        "triggerServerEvent"
     ],
     "Lua.diagnostics.disable": [
         "lowercase-global"

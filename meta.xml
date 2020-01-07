@@ -3,9 +3,9 @@
      <script src="util\class.lua" type="shared"/>
      <script src="util\color.lua" type="shared"/>
      <script src="enums.lua" type="shared"/>
-     <script src="team.lua" type="shared"/>
      <script src="server.lua" type="server"/>
      <script src="client.lua" type="client"/>
      <script src="gui\dxbutton.lua" type="client"/>
+     <map src="ptp-map.map" dimension="0" />
      <oop>true</oop>
 </meta>
