@@ -1,6 +1,18 @@
 # MTA PTP
 
+**NOTE**: WARNING! Work in progress!
+
 Classic PTP ("Protect The President") mode implementation for MTA San Andreas 
+
+## Roadmap
+
+- [x] Three teams: Secret Service, Police and Terrorists
+- [x] Team/Skin selection menu
+- [x] Respawn player to team base when wasted
+- [x] Respawn vehicle when it exploded
+- [x] Arrange team vehicles
+- [ ] Arrange various vehicles to the map
+- [ ] Round system (random map selection, random president/vice president selection, limit the player movement to round map, limit round time)
 
 # Install
 
