@@ -10,13 +10,42 @@ local function mainOnPlayerJoin()
     outputChatBox("Please select the class and skin of your player", source, 255, 255, 0)
 end
 
-local function spawnPlayerOnTeamBase(player, x, y, z, rotation, skinID)
+local function giveTerroristsWeapon(player)
+    giveWeapon(player, 27, 99999, false) -- Combat Shotgun
+    giveWeapon(player, 28, 99999, false) -- Uzi
+    giveWeapon(player, 16, 99999, false) -- Grenade
+    giveWeapon(player, 30, 99999, false) -- AK47
+end
+
+local function givePoliceWeapon(player)
+    giveWeapon(player, 29, 99999, false) -- MP5
+    giveWeapon(player, 22, 99999, false) -- Colt 45
+    giveWeapon(player, 25, 99999, false) -- Shotgun
+    giveWeapon(player, 31, 99999, false) -- M4
+end
+
+local function giveSecretServiceWeapon(player)
+    giveWeapon(player, 29, 99999, false) -- MP5
+    giveWeapon(player, 23, 99999, false) -- Silenced
+    giveWeapon(player, 25, 99999, false) -- Shotgun
+    giveWeapon(player, 3, 1, false) -- Nightstick
+end
+
+local function spawnPlayerOnTeamBase(player, x, y, z, rotation, skinID, teamName)
     showCursor(player, false)
     spawnPlayer(player, x, y, z, rotation, skinID)
     setCameraTarget(player)
     --fadeCamera(player, true)
     setPlayerHudComponentVisible(player, "all", true)
     toggleAllControls(player, true, true, true)
+    
+    if teamName == Teams.SECRET_SERVICE then
+        giveSecretServiceWeapon(player)
+    elseif teamName == Teams.POLICE then
+        givePoliceWeapon(player)
+    elseif teamName == Teams.TERRORISTS then
+        giveTerroristsWeapon(player)
+    end
 end
 
 local function mainOnPlayerTeamSelected(team, skinID)
@@ -27,17 +56,17 @@ local function mainOnPlayerTeamSelected(team, skinID)
         local team = getTeamFromName(Teams.SECRET_SERVICE)
         setPlayerTeam(source, team)
         setElementData(source, "team."..Teams.SECRET_SERVICE..".skinID", skinID)
-        spawnPlayerOnTeamBase(source, teamSpawns[Teams.SECRET_SERVICE][1], teamSpawns[Teams.SECRET_SERVICE][2], teamSpawns[Teams.SECRET_SERVICE][3], teamSpawns[Teams.SECRET_SERVICE][4], skinID)
+        spawnPlayerOnTeamBase(source, teamSpawns[Teams.SECRET_SERVICE][1], teamSpawns[Teams.SECRET_SERVICE][2], teamSpawns[Teams.SECRET_SERVICE][3], teamSpawns[Teams.SECRET_SERVICE][4], skinID, Teams.SECRET_SERVICE)
     elseif team == Teams.POLICE then
         local team = getTeamFromName(Teams.POLICE)
         setPlayerTeam(source, team)
         setElementData(source, "team."..Teams.POLICE..".skinID", skinID)
-        spawnPlayerOnTeamBase(source, teamSpawns[Teams.POLICE][1], teamSpawns[Teams.POLICE][2], teamSpawns[Teams.POLICE][3], teamSpawns[Teams.POLICE][4], skinID)
+        spawnPlayerOnTeamBase(source, teamSpawns[Teams.POLICE][1], teamSpawns[Teams.POLICE][2], teamSpawns[Teams.POLICE][3], teamSpawns[Teams.POLICE][4], skinID, Teams.POLICE)
     elseif team == Teams.TERRORISTS then
         local team = getTeamFromName(Teams.TERRORISTS)
         setPlayerTeam(source, team)
         setElementData(source, "team."..Teams.TERRORISTS..".skinID", skinID)
-        spawnPlayerOnTeamBase(source, teamSpawns[Teams.TERRORISTS][1], teamSpawns[Teams.TERRORISTS][2], teamSpawns[Teams.TERRORISTS][3], teamSpawns[Teams.TERRORISTS][4], skinID)
+        spawnPlayerOnTeamBase(source, teamSpawns[Teams.TERRORISTS][1], teamSpawns[Teams.TERRORISTS][2], teamSpawns[Teams.TERRORISTS][3], teamSpawns[Teams.TERRORISTS][4], skinID, Teams.TERRORISTS)
     end
     triggerClientEvent(source, "onPlayerTeamSelectedSuccessful", resourceRoot)
 end
@@ -59,7 +88,7 @@ addEventHandler("onPlayerWasted", root,
         local team = getPlayerTeam(source)
         if team then
             local teamName = getTeamName(team)
-            setTimer( spawnPlayerOnTeamBase, 3000, 1, source, teamSpawns[teamName][1], teamSpawns[teamName][2], teamSpawns[teamName][3], teamSpawns[teamName][4], getElementData(source, "team."..teamName..".skinID"))
+            setTimer(spawnPlayerOnTeamBase, 3000, 1, source, teamSpawns[teamName][1], teamSpawns[teamName][2], teamSpawns[teamName][3], teamSpawns[teamName][4], getElementData(source, "team."..teamName..".skinID"), teamName)
         end
 	end
 )
