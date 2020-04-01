@@ -135,6 +135,7 @@ local function selectTeamAndSpawn(team, skin)
 end
 
 addEventHandler("onClientResourceStart", resourceRoot, function()
+    setAmbientSoundEnabled("gunfire", false)
     skinSelectionMenu = SkinSelectionMenu()
     skinSelectionMenu:showSkinSelectionButtons()
     skinSelectionMenu._showLabels = function()
