@@ -6,6 +6,7 @@
      <script src="server.lua" type="server"/>
      <script src="client.lua" type="client"/>
      <script src="gui\dxbutton.lua" type="client"/>
+     <script src="c_vehicle_blips.lua" type="client"/>
      <map src="ptp-map.map" dimension="0" />
      <oop>true</oop>
 </meta>
