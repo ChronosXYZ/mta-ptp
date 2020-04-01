@@ -46,11 +46,14 @@ addEvent("onPlayerTeamSelected", true)
 addEventHandler("onPlayerTeamSelected", root, mainOnPlayerTeamSelected)
 addEventHandler("onPlayerJoin", root, mainOnPlayerJoin)
 
+-- respawn exploded vehicle
 function respawnExplodedVehicle()
 	setTimer(respawnVehicle, 9000, 1, source)
 end
 addEventHandler("onVehicleExplode", root, respawnExplodedVehicle)
+--
 
+-- respawn wasted player
 addEventHandler("onPlayerWasted", root,
     function()
         local team = getPlayerTeam(source)
@@ -60,6 +63,21 @@ addEventHandler("onPlayerWasted", root,
         end
 	end
 )
+--
+
+-- respawn drown vehicle
+function respawnDrownVehicle()
+	for _, vehicle in ipairs(getElementsByType("vehicle")) do
+		if isElementInWater(vehicle) then
+		    local isOccupied, _ = next(getVehicleOccupants(vehicle))
+		    if not isOccupied then
+		        respawnVehicle(vehicle)
+		    end
+		end
+	end
+end					
+setTimer(respawnDrownVehicle, 20000, 0)
+--
 
 addEventHandler("onResourceStart", root,
     function ()
