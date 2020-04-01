@@ -14,6 +14,9 @@ Classic PTP ("Protect The President") mode implementation for MTA San Andreas
 - [ ] Respawn vehicle when it sinked
 - [ ] Arrange various vehicles to the map
 - [ ] Round system (random map selection, random president/vice president selection, limit the player movement to round map, limit round time)
+- [ ] Account system
+- [ ] Score saving
+- [ ] Top score players list dialog
 
 # Install
 
