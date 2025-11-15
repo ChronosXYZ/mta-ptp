@@ -2,9 +2,9 @@ local screenW, screenH = guiGetScreenSize()
 
 SkinSelectionMenu = class(function(menu)
     menu.isTeamFull = false
-    menu.policeSkins = {280, 281, 282, 283, 284, 285, 288, 265, 266, 267}
-    menu.secretServiceSkins = {163, 164, 165, 166, 194}
-    menu.terroristsSkins = {124, 125, 126, 127, 111, 112}
+    menu.policeSkins = { 280, 281, 282, 283, 284, 285, 288, 265, 266, 267 }
+    menu.secretServiceSkins = { 163, 164, 165, 166, 194 }
+    menu.terroristsSkins = { 124, 125, 126, 127, 111, 112 }
     menu._selectSecretService = function()
         menu.teamSelected = Teams.SECRET_SERVICE
         setElementModel(localPlayer, menu.secretServiceSkins[1])
@@ -26,22 +26,45 @@ SkinSelectionMenu = class(function(menu)
 end)
 
 function SkinSelectionMenu:showSkinSelectionDxLabels()
-    dxDrawText("Protect The President", (screenW * 0.2870) - 1, (screenH * 0.0528) - 1, (screenW * 0.6734) - 1, (screenH * 0.1176) - 1, tocolor(0, 0, 0, 255), 2.00, "bankgothic", "left", "top", false, false, false, false, false)
-    dxDrawText("Protect The President", (screenW * 0.2870) + 1, (screenH * 0.0528) - 1, (screenW * 0.6734) + 1, (screenH * 0.1176) - 1, tocolor(0, 0, 0, 255), 2.00, "bankgothic", "left", "top", false, false, false, false, false)
-    dxDrawText("Protect The President", (screenW * 0.2870) - 1, (screenH * 0.0528) + 1, (screenW * 0.6734) - 1, (screenH * 0.1176) + 1, tocolor(0, 0, 0, 255), 2.00, "bankgothic", "left", "top", false, false, false, false, false)
-    dxDrawText("Protect The President", (screenW * 0.2870) + 1, (screenH * 0.0528) + 1, (screenW * 0.6734) + 1, (screenH * 0.1176) + 1, tocolor(0, 0, 0, 255), 2.00, "bankgothic", "left", "top", false, false, false, false, false)
-    dxDrawText("Protect The President", screenW * 0.2870, screenH * 0.0528, screenW * 0.6734, screenH * 0.1176, tocolor(255, 255, 255, 255), 2.00, "bankgothic", "left", "top", false, false, false, false, false)
+    dxDrawText("Protect The President", (screenW * 0.2870) - 1, (screenH * 0.0528) - 1, (screenW * 0.6734) - 1,
+        (screenH * 0.1176) - 1, tocolor(0, 0, 0, 255), 2.00, "bankgothic", "left", "top", false, false, false, false,
+        false)
+    dxDrawText("Protect The President", (screenW * 0.2870) + 1, (screenH * 0.0528) - 1, (screenW * 0.6734) + 1,
+        (screenH * 0.1176) - 1, tocolor(0, 0, 0, 255), 2.00, "bankgothic", "left", "top", false, false, false, false,
+        false)
+    dxDrawText("Protect The President", (screenW * 0.2870) - 1, (screenH * 0.0528) + 1, (screenW * 0.6734) - 1,
+        (screenH * 0.1176) + 1, tocolor(0, 0, 0, 255), 2.00, "bankgothic", "left", "top", false, false, false, false,
+        false)
+    dxDrawText("Protect The President", (screenW * 0.2870) + 1, (screenH * 0.0528) + 1, (screenW * 0.6734) + 1,
+        (screenH * 0.1176) + 1, tocolor(0, 0, 0, 255), 2.00, "bankgothic", "left", "top", false, false, false, false,
+        false)
+    dxDrawText("Protect The President", screenW * 0.2870, screenH * 0.0528, screenW * 0.6734, screenH * 0.1176,
+        tocolor(255, 255, 255, 255), 2.00, "bankgothic", "left", "top", false, false, false, false, false)
 
-    dxDrawText("Select the team:", (screenW * 0.0896) - 1, (screenH * 0.2685) - 1, (screenW * 0.3693) - 1, (screenH * 0.3250) - 1, tocolor(0, 0, 0, 255), 2.00, "bankgothic", "left", "top", false, false, false, false, false)
-    dxDrawText("Select the team:", (screenW * 0.0896) + 1, (screenH * 0.2685) - 1, (screenW * 0.3693) + 1, (screenH * 0.3250) - 1, tocolor(0, 0, 0, 255), 2.00, "bankgothic", "left", "top", false, false, false, false, false)
-    dxDrawText("Select the team:", (screenW * 0.0896) - 1, (screenH * 0.2685) + 1, (screenW * 0.3693) - 1, (screenH * 0.3250) + 1, tocolor(0, 0, 0, 255), 2.00, "bankgothic", "left", "top", false, false, false, false, false)
-    dxDrawText("Select the team:", (screenW * 0.0896) + 1, (screenH * 0.2685) + 1, (screenW * 0.3693) + 1, (screenH * 0.3250) + 1, tocolor(0, 0, 0, 255), 2.00, "bankgothic", "left", "top", false, false, false, false, false)
-    dxDrawText("Select the team:", screenW * 0.0896, screenH * 0.2685, screenW * 0.3693, screenH * 0.3250, tocolor(255, 255, 255, 255), 2.00, "bankgothic", "left", "top", false, false, false, false, false)
+    dxDrawText("Select the team:", (screenW * 0.0896) - 1, (screenH * 0.2685) - 1, (screenW * 0.3693) - 1,
+        (screenH * 0.3250) - 1, tocolor(0, 0, 0, 255), 2.00, "bankgothic", "left", "top", false, false, false, false,
+        false)
+    dxDrawText("Select the team:", (screenW * 0.0896) + 1, (screenH * 0.2685) - 1, (screenW * 0.3693) + 1,
+        (screenH * 0.3250) - 1, tocolor(0, 0, 0, 255), 2.00, "bankgothic", "left", "top", false, false, false, false,
+        false)
+    dxDrawText("Select the team:", (screenW * 0.0896) - 1, (screenH * 0.2685) + 1, (screenW * 0.3693) - 1,
+        (screenH * 0.3250) + 1, tocolor(0, 0, 0, 255), 2.00, "bankgothic", "left", "top", false, false, false, false,
+        false)
+    dxDrawText("Select the team:", (screenW * 0.0896) + 1, (screenH * 0.2685) + 1, (screenW * 0.3693) + 1,
+        (screenH * 0.3250) + 1, tocolor(0, 0, 0, 255), 2.00, "bankgothic", "left", "top", false, false, false, false,
+        false)
+    dxDrawText("Select the team:", screenW * 0.0896, screenH * 0.2685, screenW * 0.3693, screenH * 0.3250,
+        tocolor(255, 255, 255, 255), 2.00, "bankgothic", "left", "top", false, false, false, false, false)
 
-    dxDrawText("You can change skin via left & right arrow buttons. When you are done - click Space", screenW * 0.3089, screenH * 0.8111, screenW * 0.6896, screenH * 0.9185, tocolor(255, 255, 255, 255), 3.00, "arial", "left", "top", false, true, false, false, false)
+    dxDrawText("You can change skin via left & right arrow buttons. When you are done - click Space", screenW * 0.3089,
+        screenH * 0.8111, screenW * 0.6896, screenH * 0.9185, tocolor(255, 255, 255, 255), 3.00, "arial", "left", "top",
+        false, true, false, false, false)
     if self.isTeamFull then
-        dxDrawText("Team is full!", (screenW * 0.6896) + 1, (screenH * 0.5630) + 1, (screenW * 0.7984) + 1, (screenH * 0.6139) + 1, tocolor(0, 0, 0, 255), 3.00, "arial", "left", "top", false, false, false, false, false)
-        dxDrawText("Team is full!", screenW * 0.6896, screenH * 0.5630, screenW * 0.7984, screenH * 0.6139, tocolor(241, 6, 0, 254), 3.00, "arial", "left", "top", false, false, false, false, false)
+        dxDrawText("Team is full!", (screenW * 0.6896) + 1, (screenH * 0.5630) + 1, (screenW * 0.7984) + 1,
+            (screenH * 0.6139) + 1, tocolor(0, 0, 0, 255), 3.00, "arial", "left", "top", false, false, false, false,
+            false)
+        dxDrawText("Team is full!", screenW * 0.6896, screenH * 0.5630, screenW * 0.7984, screenH * 0.6139,
+            tocolor(241, 6, 0, 254), 3.00, "arial", "left", "top", false, false, false, false, false)
     end
 end
 
@@ -136,6 +159,7 @@ end
 
 addEventHandler("onClientResourceStart", resourceRoot, function()
     setAmbientSoundEnabled("gunfire", false)
+    showCursor(true)
     skinSelectionMenu = SkinSelectionMenu()
     skinSelectionMenu:showSkinSelectionButtons()
     skinSelectionMenu._showLabels = function()
@@ -148,8 +172,10 @@ addEventHandler("onClientResourceStart", resourceRoot, function()
     bindKey("arrow_r", "down", skinSelectionMenu._switchSkin)
     addEventHandler("onClientRender", root, skinSelectionMenu._showLabels)
     function _selectTeamAndSpawn()
-        selectTeamAndSpawn(skinSelectionMenu.teamSelected, skinSelectionMenu._currentSkinArray[skinSelectionMenu._currentSkinIndex])
+        selectTeamAndSpawn(skinSelectionMenu.teamSelected,
+            skinSelectionMenu._currentSkinArray[skinSelectionMenu._currentSkinIndex])
     end
+
     bindKey("space", "down", _selectTeamAndSpawn)
     skinSelectionMenu._selectSecretService()
 end)
