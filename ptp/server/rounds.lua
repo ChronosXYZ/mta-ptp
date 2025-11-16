@@ -63,7 +63,11 @@ function RoundSystem:countDownToRoundStart(seconds)
     self.timers.countdown = setTimer(function()
         if remainingSecs > 0 then
             outputChatBox("Round starts in " .. tostring(remainingSecs) .. " seconds!", root, 255, 255, 0) -- FIXME
+            playSoundFrontEnd(root, 43)
             remainingSecs = remainingSecs - 1
+            if remainingSecs == 5 then
+                triggerEvent("onRoundSelectPresident", root)
+            end
         else
             killTimerIfExists(self.timers.countdown)
             self.timers.countdown = nil
@@ -90,6 +94,7 @@ function RoundSystem:endRound()
     triggerEvent("onRoundEnd", root, self.current_map)
     -- 10 seconds break between rounds, then countdown of 10 seconds
     setTimer(function()
+        self:loadMap(getRandomMap())
         self:countDownToRoundStart(10)
     end, 10 * 1000, 1)
     outputDebugString("Round ended")
