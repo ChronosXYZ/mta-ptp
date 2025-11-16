@@ -24,21 +24,21 @@ local function spawnPlayerOnTeamBase(player, x, y, z, rotation, skinID, teamName
     toggleAllControls(player, true, true, true)
 
     for _, weaponID in ipairs(teamWeapons[teamName]) do
-        giveWeapon(player, weaponID, 99999, false)
+        giveWeapon(player, weaponID, 9999, false)
     end
 end
 
 local function mainOnPlayerTeamSelected(team, skinID)
-    if type(team) ~= "string" or type(skinID) ~= "number" then
+    if type(team.id) ~= "string" or type(skinID) ~= "number" then
         outputDebugString("OnPlayerTeamSelected: Invalid argument type")
     end
 
-    local selectedTeam = getTeamFromName(team)
+    local selectedTeam = getTeamFromName(team.name)
     ---@diagnostic disable-next-line: param-type-mismatch
     setPlayerTeam(source, selectedTeam)
-    setElementData(source, "team." .. team .. ".skinID", skinID)
-    spawnPlayerOnTeamBase(source, teamSpawns[team][1], teamSpawns[team][2],
-        teamSpawns[team][3], teamSpawns[team][4], skinID, team)
+    setElementData(source, "team." .. team.id .. ".skinID", skinID)
+    spawnPlayerOnTeamBase(source, teamSpawns[team.id][1], teamSpawns[team.id][2],
+        teamSpawns[team.id][3], teamSpawns[team.id][4], skinID, team.id)
     triggerClientEvent(source, "onPlayerTeamSelectedSuccessful", resourceRoot)
 end
 
@@ -67,10 +67,12 @@ addEventHandler("onPlayerWasted", root,
         local team = getPlayerTeam(source)
         if team then
             local teamName = getTeamName(team)
-            setTimer(spawnPlayerOnTeamBase, 3000, 1, source, teamSpawns[teamName][1], teamSpawns[teamName][2],
-                teamSpawns[teamName][3], teamSpawns[teamName][4],
-                getElementData(source, "team." .. teamName .. ".skinID"),
-                teamName)
+            local teamID = Teams_name_to_id[teamName]
+            setTimer(spawnPlayerOnTeamBase, 3000, 1, source, teamSpawns[teamID][1],
+                teamSpawns[teamID][2],
+                teamSpawns[teamID][3], teamSpawns[teamID][4],
+                getElementData(source, "team." .. teamID .. ".skinID"),
+                teamID)
         end
     end
 )
