@@ -72,22 +72,6 @@ local function onPlayerWasted()
     setTimer(spawnPlayerAt, 3000, 1, player, spawn[1], spawn[2], spawn[3], spawn[4], skinID, teamID)
 end
 
--- respawn exploded vehicle
--- local function respawnExplodedVehicle()
---     setTimer(respawnVehicle, 9000, 1, source)
--- end
-
--- local function respawnDrownVehicle()
---     for _, vehicle in ipairs(getElementsByType("vehicle")) do
---         if isElementInWater(vehicle) then
---             local isOccupied, _ = next(getVehicleOccupants(vehicle))
---             if not isOccupied then
---                 respawnVehicle(vehicle)
---             end
---         end
---     end
--- end
-
 local function vehicleSpawnHandler()
     setTimer(setElementHealth, 50, 1, source, getElementData(source, "health"))
 end
