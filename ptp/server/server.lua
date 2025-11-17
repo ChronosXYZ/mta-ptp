@@ -86,10 +86,8 @@ local function respawnDrownVehicle()
     end
 end
 
-local function vehicleSpawnHandler(exploded)
-    source:setHealth(source:getData("health"))
-    toggleVehicleRespawn(source, true)
-    setVehicleRespawnDelay(source, 10000)
+local function vehicleSpawnHandler()
+    setTimer(setElementHealth, 50, 1, source, getElementData(source, "health"))
 end
 
 addEventHandler("onVehicleRespawn", root, vehicleSpawnHandler)
