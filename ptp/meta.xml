@@ -6,10 +6,11 @@
      <script src="util/fsm.lua" type="shared" />
      <script src="enums.lua" type="shared" />
      <script src="server/server.lua" type="server" />
-     <script src="client.lua" type="client" />
+     <script src="client/client.lua" type="client" />
      <script src="client/vehicle_damage_display.lua" type="client" />
-     <script src="gui/dxbutton.lua" type="client" />
-     <script src="c_vehicle_blips.lua" type="client" />
+     <script src="client/gui/countdown.lua" type="client" />
+     <script src="client/gui/dxbutton.lua" type="client" />
+     <script src="client/vehicle_blips.lua" type="client" />
      <script src="server/map_manager.lua" type="server" />
 
      <oop>true</oop>

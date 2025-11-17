@@ -1,5 +1,9 @@
 local MAPS = { "ptp-ls" }
-local ROUND_TIME_LIMIT = 1 * 60 -- seconds
+local ROUND_TIME_LIMIT = 1 * 60 * 1000           -- 10 minutes
+local ROUND_END_BREAK_TIME = 10 * 1000           -- 10 seconds
+local COUNTDOWN_TIME = 10                        -- seconds
+local COUNTDOWN_SOUND = 43
+local VEHICLE_IDLE_RESPAWN_DELAY = 2 * 60 * 1000 -- 2 minutes
 
 local function killTimerIfExists(t)
     if t and isTimer(t) then
@@ -33,7 +37,11 @@ MapManager = class(function(self)
                 self:loadMap(self.next_map)
             end,
             oncountdown = function()
-                self:startCountDown(5)
+                -- notify server-side listeners
+                triggerEvent("onRoundPrepare", resourceRoot)
+                -- notify clients so they can display countdown UI
+                triggerClientEvent(root, "ptp:onCountdownStart", resourceRoot, COUNTDOWN_TIME)
+                self:startCountDown(COUNTDOWN_TIME)
             end,
             onrunning = function()
                 self:startRound()
@@ -69,6 +77,10 @@ function MapManager:unloadCurrentMap()
     teamSpawns = {}
 end
 
+function MapManager:state()
+    return self.state_machine.current
+end
+
 function MapManager:onResourceStop(stoppedResource)
     if stoppedResource ~= self.current_map then
         return
@@ -87,8 +99,9 @@ function MapManager:loadMap(mapName)
     end
 
     startResource(resource)
+    self.current_map = resource
     setElementData(resourceRoot, "ptp.current_map", self.current_map)
-    outputDebugString("Map " .. tostring(self.current_map) .. " loaded")
+    outputDebugString("Map " .. tostring(getResourceName(self.current_map)) .. " loaded")
 
     teamSpawns = {}
     for _, v in ipairs(getElementsByType("spawnpoint")) do
@@ -105,6 +118,7 @@ function MapManager:loadMap(mapName)
 
     for _, vehicle in ipairs(getElementsByType("vehicle")) do
         toggleVehicleRespawn(vehicle, true)
+        setVehicleIdleRespawnDelay(vehicle, VEHICLE_IDLE_RESPAWN_DELAY)
     end
 
     self.state_machine:enter_countdown()
@@ -114,18 +128,21 @@ end
 function MapManager:startCountDown(seconds)
     killTimerIfExists(self.timers.countdown)
     local remainingSecs = seconds
+    for _, player in ipairs(getElementsByType("player")) do
+        setElementFrozen(player, true)                -- Freeze all players
+        toggleAllControls(player, false, true, false) -- Disable all controls for all players
+    end
     self.timers.countdown = setTimer(function()
+        triggerClientEvent(root, "onCountdown", resourceRoot, remainingSecs)
         if remainingSecs > 0 then
-            outputChatBox("Round starts in " .. tostring(remainingSecs) .. " seconds!", root, 255, 255, 0) -- FIXME
-            playSoundFrontEnd(root, 43)
-            if remainingSecs == 4 then
+            -- outputChatBox("Round starts in " .. tostring(remainingSecs) .. " seconds!", root, 255, 255, 0) -- FIXME
+            if remainingSecs == 5 then
                 triggerEvent("onRoundSelectPresident", root)
             end
             remainingSecs = remainingSecs - 1
         else
             killTimerIfExists(self.timers.countdown)
             self.timers.countdown = nil
-
             self.state_machine:start_round()
         end
     end, 1000, seconds + 1)
@@ -136,7 +153,14 @@ function MapManager:startRound()
     self.timers.round = setTimer(function()
         self.next_map = getRandomMap()
         self.state_machine:end_round()
-    end, ROUND_TIME_LIMIT * 1000, 1)
+    end, ROUND_TIME_LIMIT, 1)
+
+    for _, player in ipairs(getElementsByType("player")) do
+        if getPlayerTeam(player) ~= nil then
+            setElementFrozen(player, false)             -- Unfreeze all players
+            toggleAllControls(player, true, true, true) -- Enable all controls for all players
+        end
+    end
 
     triggerEvent("onRoundStart", root, self.current_map)
     outputChatBox("Round has started! Good luck!", root, 0, 255, 0) -- FIXME
@@ -147,10 +171,17 @@ function MapManager:endRound()
     self.timers.round = nil
 
     triggerEvent("onRoundEnd", root, self.current_map)
-    -- 5 seconds break between rounds, then countdown of 10 seconds
+    outputChatBox("Round has ended!", root, 255, 0, 0) -- FIXME
+
+    for _, player in ipairs(getElementsByType("player")) do
+        setElementFrozen(player, true)                -- Freeze all players
+        toggleAllControls(player, false, true, false) -- Disable all controls for all players
+    end
+
+    -- break between rounds, then countdown of 10 seconds
     setTimer(function()
-        self.state_machine:load_map()
-    end, 5 * 1000, 1)
+        self.state_machine:unload_map()
+    end, ROUND_END_BREAK_TIME, 1)
 end
 
 mapManager = MapManager()

@@ -1,8 +1,8 @@
 -- Client-side 3D damage percent display
 -- Draws vehicle.damagePercent (0-100) above vehicles as 3D text
 
-local MAX_DIST = 80       -- max distance to draw
-local HEIGHT_OFFSET = 1.5 -- meters above vehicle
+local MAX_DIST = 30     -- max distance to draw
+local HEIGHT_OFFSET = 0 -- meters above vehicle
 local MIN_SCALE = 0.6
 local MAX_SCALE = 1.4
 
@@ -31,28 +31,28 @@ local function drawTextAtScreen(text, sx, sy, scale, r, g, b)
     dxDrawText(text, sx, sy, sx, sy, tocolor(r, g, b, alpha), scale, "default-bold", "center", "bottom")
 end
 
+local function processVehicle(vehicle, px, py, pz)
+    if not isElementStreamedIn(vehicle) then return end
+    local dmg = math.floor(getElementHealth(vehicle) / 10 + 0.5)
+    if dmg == nil then return end
+    local vx, vy, vz = getElementPosition(vehicle)
+    if not vx then return end
+    local dist = getDistanceBetweenPoints3D(px, py, pz, vx, vy, vz)
+    if dist > MAX_DIST then return end
+    if not isLineOfSightClear(px, py, pz, vx, vy, vz, true, false, true, true, false, false, false, localPlayer) then return end
+    local sx, sy = getScreenFromWorldPosition(vx, vy, vz + HEIGHT_OFFSET)
+    if not sx then return end
+    local tscale = 1 - (dist / MAX_DIST)
+    local scale = math.max(MIN_SCALE, MAX_SCALE * tscale)
+    local r, g, b = percentToColor(dmg)
+    drawTextAtScreen(tostring(dmg) .. "%", sx, sy, scale, r, g, b)
+end
+
 local function onRender()
     local px, py, pz = getElementPosition(localPlayer)
     if not px then return end
     for _, vehicle in ipairs(getElementsByType("vehicle")) do
-        if isElementStreamedIn(vehicle) then
-            local dmg = math.floor(getElementHealth(vehicle) / 10 + 0.5)
-            if dmg ~= nil then
-                local vx, vy, vz = getElementPosition(vehicle)
-                if vx then
-                    local dist = getDistanceBetweenPoints3D(px, py, pz, vx, vy, vz)
-                    if dist <= MAX_DIST then
-                        local sx, sy = getScreenFromWorldPosition(vx, vy, vz + HEIGHT_OFFSET)
-                        if sx then
-                            local tscale = 1 - (dist / MAX_DIST)
-                            local scale = math.max(MIN_SCALE, MAX_SCALE * tscale)
-                            local r, g, b = percentToColor(dmg)
-                            drawTextAtScreen(tostring(dmg) .. "%", sx, sy, scale, r, g, b)
-                        end
-                    end
-                end
-            end
-        end
+        processVehicle(vehicle, px, py, pz)
     end
 end
 
@@ -61,5 +61,3 @@ addEventHandler("onClientRender", root, onRender)
 addEventHandler("onClientResourceStop", resourceRoot, function()
     removeEventHandler("onClientRender", root, onRender)
 end)
-
-return true

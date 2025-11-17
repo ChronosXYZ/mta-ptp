@@ -27,21 +27,23 @@ local function spawnPlayerOnTeamBase(player, x, y, z, rotation, skinID, teamName
     showCursor(player, false)
     spawnPlayer(player, x, y, z, rotation, skinID)
     setCameraTarget(player)
-    --fadeCamera(player, true)
     setPlayerHudComponentVisible(player, "all", true)
-    toggleAllControls(player, true, true, true)
+    if mapManager:state() == "running" then
+        toggleAllControls(player, true, true, true)
+    end
 
     for _, weaponID in ipairs(teamWeapons[teamName]) do
         giveWeapon(player, weaponID, 9999, false)
     end
 end
-local function onPlayerJoin(player)
+local function enterTeamSelectMenu(player)
     setCameraMatrix(player, 1654.3691, -1643.5967, 85.176224, 1658.8364, -1545.6569, 65.482597)
-    spawnPlayer(player, 1654.524, -1637.7119, 85.157089, 180.0, 0)
+    spawnPlayer(player, 1654.524, -1637.7119, 84.0, 180.0, 0)
     toggleAllControls(player, false, true, false)
     setPlayerHudComponentVisible(player, "all", false)
-    fadeCamera(player, true, 5)
+    fadeCamera(player, true, 1.0)
     outputChatBox("Please select the class and skin of your player", player, 255, 255, 0)
+    triggerClientEvent(player, "enterTeamSelectMenu", resourceRoot)
 end
 
 local function onPlayerTeamSelected(player, team, skinID)
@@ -71,20 +73,20 @@ local function onPlayerWasted()
 end
 
 -- respawn exploded vehicle
-local function respawnExplodedVehicle()
-    setTimer(respawnVehicle, 9000, 1, source)
-end
+-- local function respawnExplodedVehicle()
+--     setTimer(respawnVehicle, 9000, 1, source)
+-- end
 
-local function respawnDrownVehicle()
-    for _, vehicle in ipairs(getElementsByType("vehicle")) do
-        if isElementInWater(vehicle) then
-            local isOccupied, _ = next(getVehicleOccupants(vehicle))
-            if not isOccupied then
-                respawnVehicle(vehicle)
-            end
-        end
-    end
-end
+-- local function respawnDrownVehicle()
+--     for _, vehicle in ipairs(getElementsByType("vehicle")) do
+--         if isElementInWater(vehicle) then
+--             local isOccupied, _ = next(getVehicleOccupants(vehicle))
+--             if not isOccupied then
+--                 respawnVehicle(vehicle)
+--             end
+--         end
+--     end
+-- end
 
 local function vehicleSpawnHandler()
     setTimer(setElementHealth, 50, 1, source, getElementData(source, "health"))
@@ -93,16 +95,14 @@ end
 addEventHandler("onVehicleRespawn", root, vehicleSpawnHandler)
 
 addEvent("onPlayerTeamSelected", true)
-addEventHandler("onPlayerTeamSelected", root, function(team, skinID)
-    onPlayerTeamSelected(source, team, skinID)
+addEventHandler("onPlayerTeamSelected", resourceRoot, function(team, skinID)
+    onPlayerTeamSelected(client, team, skinID)
 end)
-addEventHandler("onPlayerJoin", root, function()
-    onPlayerJoin(source)
-end)
-addEventHandler("onResourceStart", resourceRoot, function()
-    for _, player in ipairs(getElementsByType("player")) do
-        onPlayerJoin(player)
-    end
+
+addEvent("onClientReady", true)
+addEventHandler("onClientReady", resourceRoot, function()
+    outputChatBox("Welcome to Protect The President!", client, 255, 255, 0)
+    enterTeamSelectMenu(client)
 end)
 
 -- addEventHandler("onVehicleExplode", root, respawnExplodedVehicle)
@@ -129,3 +129,11 @@ addEventHandler("onResourceStart", resourceRoot,
         createTeam(Teams.PRESIDENT.name, 255, 255, 255)
     end
 )
+
+addEvent("onRoundPrepare", false);
+addEventHandler("onRoundPrepare", resourceRoot, function()
+    for _, player in ipairs(getElementsByType("player")) do
+        setPlayerTeam(player, nil)
+        enterTeamSelectMenu(player)
+    end
+end)

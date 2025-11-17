@@ -25,6 +25,8 @@ SkinSelectionMenu = class(function(menu)
     end
 end)
 
+
+
 function SkinSelectionMenu:showSkinSelectionDxLabels()
     dxDrawText("Protect The President", (screenW * 0.2870) - 1, (screenH * 0.0528) - 1, (screenW * 0.6734) - 1,
         (screenH * 0.1176) - 1, tocolor(0, 0, 0, 255), 2.00, "bankgothic", "left", "top", false, false, false, false,
@@ -153,46 +155,58 @@ function SkinSelectionMenu:switchSkin(key)
     end
 end
 
-local function selectTeamAndSpawn(team, skin)
-    triggerServerEvent("onPlayerTeamSelected", localPlayer, team, skin)
-end
-
 addEventHandler("onClientResourceStart", resourceRoot, function()
     setAmbientSoundEnabled("gunfire", false)
+    triggerServerEvent("onClientReady", resourceRoot)
+end)
+
+
+skinSelectionMenu = SkinSelectionMenu()
+
+
+
+addEvent("enterTeamSelectMenu", true)
+addEventHandler("enterTeamSelectMenu", resourceRoot, function()
+    outputChatBox("Entering team selection menu...")
     showCursor(true)
-    skinSelectionMenu = SkinSelectionMenu()
     skinSelectionMenu:showSkinSelectionButtons()
+
+    skinSelectionMenu._switchLeft = function()
+        skinSelectionMenu:switchSkin("arrow_l")
+    end
+    skinSelectionMenu._switchRight = function()
+        skinSelectionMenu:switchSkin("arrow_r")
+    end
+    bindKey("arrow_l", "down", skinSelectionMenu._switchLeft)
+    bindKey("arrow_r", "down", skinSelectionMenu._switchRight)
+
     skinSelectionMenu._showLabels = function()
         skinSelectionMenu:showSkinSelectionDxLabels()
     end
-    skinSelectionMenu._switchSkin = function(key)
-        skinSelectionMenu:switchSkin(key)
-    end
-    bindKey("arrow_l", "down", skinSelectionMenu._switchSkin)
-    bindKey("arrow_r", "down", skinSelectionMenu._switchSkin)
     addEventHandler("onClientRender", root, skinSelectionMenu._showLabels)
-    function _selectTeamAndSpawn()
-        selectTeamAndSpawn(skinSelectionMenu.teamSelected,
+
+    skinSelectionMenu._selectTeamAndSpawn = function()
+        triggerServerEvent("onPlayerTeamSelected", resourceRoot, skinSelectionMenu.teamSelected,
             skinSelectionMenu._currentSkinArray[skinSelectionMenu._currentSkinIndex])
     end
+    bindKey("space", "down", skinSelectionMenu._selectTeamAndSpawn)
 
-    bindKey("space", "down", _selectTeamAndSpawn)
     skinSelectionMenu._selectSecretService()
 end)
-
-addEvent("onPlayerTeamFull", true)
-addEventHandler("onPlayerTeamFull", root, function()
-    skinSelectionMenu.isTeamFull = true
-    setTimer(function()
-        skinSelectionMenu.isTeamFull = false
-    end, 2000, 1)
+addEvent("onPlayerTeamSelectedSuccessful", true)
+addEventHandler("onPlayerTeamSelectedSuccessful", resourceRoot, function()
+    unbindKey("arrow_l", "down", skinSelectionMenu._switchLeft)
+    unbindKey("arrow_r", "down", skinSelectionMenu._switchRight)
+    unbindKey("space", "down", skinSelectionMenu._selectTeamAndSpawn)
+    removeEventHandler("onClientRender", root, skinSelectionMenu._renderHandler)
+    skinSelectionMenu:hideSkinSelectionButtons()
 end)
 
 addEvent("onPlayerTeamSelectedSuccessful", true)
-addEventHandler("onPlayerTeamSelectedSuccessful", root, function()
+addEventHandler("onPlayerTeamSelectedSuccessful", resourceRoot, function()
     unbindKey("arrow_l", "down", skinSelectionMenu._switchSkin)
     unbindKey("arrow_r", "down", skinSelectionMenu._switchSkin)
-    unbindKey("space", "down", _selectTeamAndSpawn)
+    unbindKey("space", "down", skinSelectionMenu._selectTeamAndSpawn)
     removeEventHandler("onClientRender", root, skinSelectionMenu._showLabels)
     skinSelectionMenu:hideSkinSelectionButtons()
 end)
