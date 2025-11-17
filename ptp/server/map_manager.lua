@@ -22,23 +22,26 @@ MapManager = class(function(self)
     self.state_machine = machine.create({
         initial = 'idle',
         events = {
-            { name = 'load_map',     from = 'idle',      to = 'loading' },
-            { name = 'map_loaded',   from = 'loading',   to = 'countdown' },
-            { name = 'start_round',  from = 'countdown', to = 'running' },
-            { name = 'end_round',    from = 'running',   to = 'unloading' },
-            { name = 'map_unloaded', from = 'unloading', to = 'loading' },
+            { name = 'load_map',        from = { 'idle', 'unloading' }, to = 'loading' },
+            { name = 'enter_countdown', from = 'loading',               to = 'countdown' },
+            { name = 'start_round',     from = 'countdown',             to = 'running' },
+            { name = 'end_round',       from = 'running',               to = 'round_end' },
+            { name = 'unload_map',      from = 'round_end',             to = 'unloading' },
         },
         callbacks = {
-            onenterloading = function()
+            onloading = function()
                 self:loadMap(self.next_map)
             end,
-            onentercountdown = function()
+            oncountdown = function()
                 self:startCountDown(5)
             end,
-            onenterrunning = function()
+            onrunning = function()
                 self:startRound()
             end,
-            onenterunloading = function()
+            onround_end = function()
+                self:endRound()
+            end,
+            onunloading = function()
                 self:unloadCurrentMap()
             end,
             onstatechange = function(self, evt, from, to, ...)
@@ -71,7 +74,8 @@ function MapManager:onResourceStop(stoppedResource)
         return
     end
     setTimer(function()
-        self.state_machine:map_unloaded()
+        self.current_map = nil
+        self.state_machine:load_map()
     end, 50, 1)
 end
 
@@ -83,10 +87,8 @@ function MapManager:loadMap(mapName)
     end
 
     startResource(resource)
-    self.current_map = resource
-
-    setElementData(resourceRoot, "ptp.current_map", mapName)
-    outputDebugString("Map " .. tostring(mapName) .. " loaded")
+    setElementData(resourceRoot, "ptp.current_map", self.current_map)
+    outputDebugString("Map " .. tostring(self.current_map) .. " loaded")
 
     teamSpawns = {}
     for _, v in ipairs(getElementsByType("spawnpoint")) do
@@ -105,8 +107,7 @@ function MapManager:loadMap(mapName)
         toggleVehicleRespawn(vehicle, true)
     end
 
-    self.state_machine:map_loaded()
-
+    self.state_machine:enter_countdown()
     return true
 end
 
@@ -134,7 +135,7 @@ function MapManager:startRound()
     killTimerIfExists(self.timers.round)
     self.timers.round = setTimer(function()
         self.next_map = getRandomMap()
-        self:endRound()
+        self.state_machine:end_round()
     end, ROUND_TIME_LIMIT * 1000, 1)
 
     triggerEvent("onRoundStart", root, self.current_map)
@@ -148,7 +149,7 @@ function MapManager:endRound()
     triggerEvent("onRoundEnd", root, self.current_map)
     -- 5 seconds break between rounds, then countdown of 10 seconds
     setTimer(function()
-        self.state_machine:end_round()
+        self.state_machine:load_map()
     end, 5 * 1000, 1)
 end
 
