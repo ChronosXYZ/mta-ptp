@@ -1,4 +1,5 @@
-teamSpawns = {}
+gTeamSpawns = {}
+
 local teamWeapons = {
     [Teams.PRESIDENT.id] = { 3, 23, 25, 29 },      -- Nightstick, Silenced, Shotgun, MP5
     [Teams.SECRET_SERVICE.id] = { 3, 23, 25, 29 }, -- Nightstick, Silenced, Shotgun, MP5
@@ -28,7 +29,7 @@ local function spawnPlayerOnTeamBase(player, x, y, z, rotation, skinID, teamName
     spawnPlayer(player, x, y, z, rotation, skinID)
     setCameraTarget(player)
     setPlayerHudComponentVisible(player, "all", true)
-    if mapManager:state() == "running" then
+    if getRoundState() == "running" then
         toggleAllControls(player, true, true, true)
     end
 
@@ -55,8 +56,9 @@ local function onPlayerTeamSelected(player, team, skinID)
     ---@diagnostic disable-next-line: param-type-mismatch
     setPlayerTeam(player, selectedTeam)
     setElementData(player, "ptp.skinID", skinID)
-    spawnPlayerOnTeamBase(player, teamSpawns[team.id][1], teamSpawns[team.id][2],
-        teamSpawns[team.id][3], teamSpawns[team.id][4], skinID, team.id)
+    setPlayerNametagColor(player, team.color.r, team.color.g, team.color.b)
+    spawnPlayerOnTeamBase(player, gTeamSpawns[team.id][1], gTeamSpawns[team.id][2],
+        gTeamSpawns[team.id][3], gTeamSpawns[team.id][4], skinID, team.id)
     triggerClientEvent(player, "onPlayerTeamSelectedSuccessful", resourceRoot)
 end
 
@@ -68,7 +70,7 @@ local function onPlayerWasted()
     local teamName = getTeamName(team)
     local teamID = Teams_name_to_id[teamName]
     local skinID = getElementData(player, "ptp.skinID")
-    local spawn = teamSpawns[teamID]
+    local spawn = gTeamSpawns[teamID]
     setTimer(spawnPlayerAt, 3000, 1, player, spawn[1], spawn[2], spawn[3], spawn[4], skinID, teamID)
 end
 
@@ -89,8 +91,6 @@ addEventHandler("onClientReady", resourceRoot, function()
     enterTeamSelectMenu(client)
 end)
 
--- addEventHandler("onVehicleExplode", root, respawnExplodedVehicle)
--- setTimer(respawnDrownVehicle, 20000, 0)
 addEventHandler("onPlayerWasted", root, onPlayerWasted)
 
 addEvent("onRoundSelectPresident", true)
@@ -114,8 +114,8 @@ addEventHandler("onResourceStart", resourceRoot,
     end
 )
 
-addEvent("onRoundPrepare", false);
-addEventHandler("onRoundPrepare", resourceRoot, function()
+addEvent("ptp:onRoundPrepare", false);
+addEventHandler("ptp:onRoundPrepare", resourceRoot, function()
     for _, player in ipairs(getElementsByType("player")) do
         setPlayerTeam(player, nil)
         enterTeamSelectMenu(player)
