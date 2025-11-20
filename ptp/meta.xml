@@ -11,8 +11,12 @@
      <script src="client/gui/countdown.lua" type="client" />
      <script src="client/gui/dxbutton.lua" type="client" />
      <script src="client/gui/gametext.lua" type="client" />
+     <script src="client/gui/timer.lua" type="client" />
+     <script src="client/gui/logo.lua" type="client" />
      <script src="client/vehicle_blips.lua" type="client" />
      <script src="server/rounds.lua" type="server" />
+
+     <file src="fonts/ST-SimpleSquare.ttf" />
 
      <oop>true</oop>
 </meta>

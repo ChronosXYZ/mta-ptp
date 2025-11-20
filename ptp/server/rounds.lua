@@ -1,5 +1,6 @@
 local MAPS = { "ptp-ls" }
-local ROUND_TIME_LIMIT = 1 * 60 * 1000           -- 10 minutes
+local ROUND_TIME_SECONDS = 1 * 60
+local ROUND_TIME_LIMIT_MILLIS = ROUND_TIME_SECONDS * 1000
 local ROUND_END_BREAK_TIME = 10 * 1000           -- 10 seconds
 local COUNTDOWN_TIME = 10                        -- time of countdown in seconds
 local VEHICLE_IDLE_RESPAWN_DELAY = 2 * 60 * 1000 -- 2 minutes
@@ -19,8 +20,9 @@ end
 local currentMapName = nil
 local nextMapName = getRandomMap()
 local timers = {
-    round = nil,
+    roundEndTimer = nil,
     countdown = nil,
+    timerTick = nil,
 }
 local stateMachine
 
@@ -110,11 +112,12 @@ local function startCountdown(seconds)
 end
 
 local function startRound()
-    killTimerIfExists(timers.round)
-    timers.round = setTimer(function()
+    killTimerIfExists(timers.roundEndTimer)
+    killTimerIfExists(timers.timerTick)
+    timers.roundEndTimer = setTimer(function()
         nextMapName = getRandomMap()
         stateMachine:end_round()
-    end, ROUND_TIME_LIMIT, 1)
+    end, ROUND_TIME_LIMIT_MILLIS, 1)
 
     for _, player in ipairs(getElementsByType("player")) do
         if getPlayerTeam(player) ~= nil then
@@ -124,16 +127,23 @@ local function startRound()
     end
 
     triggerEvent("ptp:onRoundStart", root, currentMapName)
+    timers.timerTick = setTimer(function()
+        if timers.roundEndTimer == nil then
+            killTimerIfExists(timers.timerTick)
+            return
+        end
+        local timeLeft = getTimerDetails(timers.roundEndTimer)
+        triggerClientEvent(root, "ptp:timerTick", root, math.floor(timeLeft / 1000))
+    end, 1000, ROUND_TIME_SECONDS)
     outputChatBox("Round has started! Good luck!", root, 0, 255, 0) -- FIXME
 end
 
 local function endRound()
-    killTimerIfExists(timers.round)
-    timers.round = nil
+    killTimerIfExists(timers.roundEndTimer)
+    timers.roundEndTimer = nil
 
     triggerEvent("ptp:onRoundEnd", root, currentMapName)
-
-    outputChatBox("Round has ended!", root, 255, 0, 0) -- FIXME
+    triggerClientEvent(root, "ptp:onRoundEnd", root, currentMapName)
 
     for _, player in ipairs(getElementsByType("player")) do
         setElementFrozen(player, true)                -- Freeze all players

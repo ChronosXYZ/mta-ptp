@@ -210,3 +210,8 @@ addEventHandler("onPlayerTeamSelectedSuccessful", resourceRoot, function()
     removeEventHandler("onClientRender", root, skinSelectionMenu._showLabels)
     skinSelectionMenu:hideSkinSelectionButtons()
 end)
+
+addEvent("ptp:onRoundEnd", true)
+addEventHandler("ptp:onRoundEnd", resourceRoot, function()
+    showGameText("#FF0000Round has ended!", 5)
+end)

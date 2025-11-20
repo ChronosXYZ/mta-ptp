@@ -72,14 +72,14 @@ addEventHandler("ptp:onCountdown", resourceRoot, function(seconds)
     local text
     if remaining > 0 then
         if remaining <= 3 then
-            text = tostring(remaining)
+            text = "#FF0000" .. tostring(remaining)
         else
-            text = "Round starts in " .. tostring(remaining)
+            text = "#FFFF5CRound starts in " .. tostring(remaining)
         end
     else
-        text = "GO!"
+        text = "#00FF00GO!"
     end
-    showGameText(text, 5)
+    showGameText(text, 3)
 
     playTickSound()
 end)
