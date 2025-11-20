@@ -1,6 +1,8 @@
 <meta>
      <info author="ChronosX88" type="gamemode" name="PTP"
           description="Classic Protect The President Mode" />
+
+
      <script src="util/class.lua" type="shared" />
      <script src="util/color.lua" type="shared" />
      <script src="util/fsm.lua" type="shared" />
@@ -15,6 +17,9 @@
      <script src="client/gui/logo.lua" type="client" />
      <script src="client/vehicle_blips.lua" type="client" />
      <script src="server/rounds.lua" type="server" />
+
+     <include resource="ptp-ls" />
+     <include resource="ptp-sf" />
 
      <file src="fonts/ST-SimpleSquare.ttf" />
 

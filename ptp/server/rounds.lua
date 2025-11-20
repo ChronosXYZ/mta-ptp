@@ -1,4 +1,4 @@
-local MAPS = { "ptp-ls" }
+local MAPS = { "ptp-ls", "ptp-sf" }
 local ROUND_TIME_SECONDS = 1 * 60
 local ROUND_TIME_LIMIT_MILLIS = ROUND_TIME_SECONDS * 1000
 local ROUND_END_BREAK_TIME = 10 * 1000           -- 10 seconds
