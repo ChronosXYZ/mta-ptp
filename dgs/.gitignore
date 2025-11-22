@@ -1,6 +1,6 @@
 # Ignore custom styles in the styleManager directory
-styleManager/**
-styleManager/styleMapper.lua
+# styleManager/**
+# styleManager/styleMapper.lua
 
 # Except for the default style
 !styleManager/Default/
