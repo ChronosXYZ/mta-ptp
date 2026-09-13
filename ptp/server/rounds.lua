@@ -1,5 +1,5 @@
 local MAPS = { "ptp-ls", "ptp-sf" }
-local ROUND_TIME_SECONDS = 1 * 60
+local ROUND_TIME_SECONDS = 10 * 60
 local ROUND_TIME_LIMIT_MILLIS = ROUND_TIME_SECONDS * 1000
 local ROUND_END_BREAK_TIME = 10 * 1000           -- 10 seconds
 local COUNTDOWN_TIME = 10                        -- time of countdown in seconds
@@ -40,7 +40,28 @@ local function unloadCurrentMap()
 end
 
 function getRoundState()
-    return stateMachine.current
+    return stateMachine and stateMachine.current or "idle"
+end
+
+function loadMapOrStartCountdown()
+    if stateMachine and stateMachine:is("idle") then
+        if currentMapName == nil then
+            stateMachine:load_map()
+        else
+            stateMachine:start_countdown()
+        end
+        return true
+    end
+    return false
+end
+
+local function killRoundTimers()
+    killTimerIfExists(timers.countdown)
+    timers.countdown = nil
+    killTimerIfExists(timers.roundEndTimer)
+    timers.roundEndTimer = nil
+    killTimerIfExists(timers.timerTick)
+    timers.timerTick = nil
 end
 
 local function onResourceStop(stoppedResource)
@@ -85,12 +106,17 @@ local function loadMap(mapName)
         setVehicleIdleRespawnDelay(vehicle, VEHICLE_IDLE_RESPAWN_DELAY)
     end
 
-    stateMachine:enter_countdown()
+    if getPlayerCount() > 0 then
+        stateMachine:start_countdown()
+    else
+        stateMachine:set_idle()
+    end
     return true
 end
 
 local function startCountdown(seconds)
     killTimerIfExists(timers.countdown)
+
     local remainingSecs = seconds
     for _, player in ipairs(getElementsByType("player")) do
         setElementFrozen(player, true)                -- Freeze all players
@@ -115,7 +141,6 @@ local function startRound()
     killTimerIfExists(timers.roundEndTimer)
     killTimerIfExists(timers.timerTick)
     timers.roundEndTimer = setTimer(function()
-        nextMapName = getRandomMap()
         stateMachine:end_round()
     end, ROUND_TIME_LIMIT_MILLIS, 1)
 
@@ -139,8 +164,9 @@ local function startRound()
 end
 
 local function endRound()
-    killTimerIfExists(timers.roundEndTimer)
-    timers.roundEndTimer = nil
+    killRoundTimers()
+
+    nextMapName = getRandomMap()
 
     triggerEvent("ptp:onRoundEnd", root, currentMapName)
     triggerClientEvent(root, "ptp:onRoundEnd", root, currentMapName)
@@ -159,15 +185,19 @@ end
 stateMachine = machine.create({
     initial = 'idle',
     events = {
-        { name = 'load_map',        from = { 'idle', 'unloading' }, to = 'loading' },
-        { name = 'enter_countdown', from = 'loading',               to = 'countdown' },
-        { name = 'start_round',     from = 'countdown',             to = 'running' },
-        { name = 'end_round',       from = 'running',               to = 'round_end' },
-        { name = 'unload_map',      from = 'round_end',             to = 'unloading' },
+        { name = 'load_map',        from = { 'idle', 'unloading' },               to = 'loading' },
+        { name = 'set_idle',        from = { 'loading', 'countdown', 'running' }, to = 'idle' },
+        { name = 'start_countdown', from = { 'loading', 'idle' },                 to = 'countdown' },
+        { name = 'start_round',     from = 'countdown',                           to = 'running' },
+        { name = 'end_round',       from = 'running',                             to = 'round_end' },
+        { name = 'unload_map',      from = 'round_end',                           to = 'unloading' },
     },
     callbacks = {
         onloading = function()
             loadMap(nextMapName)
+        end,
+        onidle = function()
+            outputDebugString("[MapManager] Idle - waiting for players to join...")
         end,
         oncountdown = function()
             -- notify server-side listeners
@@ -191,9 +221,32 @@ stateMachine = machine.create({
 })
 
 addEventHandler("onResourceStart", resourceRoot, function()
-    stateMachine:load_map()
+    if getPlayerCount() > 0 then
+        stateMachine:load_map()
+    else
+        stateMachine:set_idle()
+    end
 end)
 
 addEventHandler("onResourceStop", root, function(stoppedResource)
     onResourceStop(stoppedResource)
+end)
+
+addEventHandler("onPlayerJoin", root, function()
+    if stateMachine:is("idle") then
+        setTimer(function()
+            if stateMachine:is("idle") and getPlayerCount() > 0 then
+                loadMapOrStartCountdown()
+            end
+        end, 5000, 1)
+    end
+end)
+
+addEventHandler("onPlayerQuit", root, function()
+    local remainingPlayers = getPlayerCount() - 1
+    if remainingPlayers == 0 then
+        outputDebugString("[MapManager] All players left during round. Stopping round and returning to idle.")
+        killRoundTimers()
+        stateMachine:set_idle()
+    end
 end)

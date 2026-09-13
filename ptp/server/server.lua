@@ -31,6 +31,9 @@ local function spawnPlayerOnTeamBase(player, x, y, z, rotation, skinID, teamName
     setPlayerHudComponentVisible(player, "all", true)
     if getRoundState() == "running" then
         toggleAllControls(player, true, true, true)
+    else
+        setElementFrozen(player, true)
+        toggleAllControls(player, false, true, false)
     end
 
     for _, weaponID in ipairs(teamWeapons[teamName]) do
@@ -88,7 +91,11 @@ end)
 addEvent("onClientReady", true)
 addEventHandler("onClientReady", resourceRoot, function()
     outputChatBox("Welcome to Protect The President!", client, 255, 255, 0)
-    enterTeamSelectMenu(client)
+    if getRoundState() == "idle" then
+        loadMapOrStartCountdown()
+    else
+        enterTeamSelectMenu(client)
+    end
 end)
 
 addEventHandler("onPlayerWasted", root, onPlayerWasted)
