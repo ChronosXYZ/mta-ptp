@@ -18,9 +18,6 @@
      <script src="client/vehicle_blips.lua" type="client" />
      <script src="server/rounds.lua" type="server" />
 
-     <include resource="ptp-ls" />
-     <include resource="ptp-sf" />
-
      <file src="fonts/ST-SimpleSquare.ttf" />
 
      <oop>true</oop>
