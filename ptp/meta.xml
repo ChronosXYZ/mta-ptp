@@ -7,6 +7,8 @@
      <script src="util/color.lua" type="shared" />
      <script src="util/fsm.lua" type="shared" />
      <script src="enums.lua" type="shared" />
+     <script src="server/map_manager.lua" type="server" />
+     <script src="server/round_manager.lua" type="server" />
      <script src="server/server.lua" type="server" />
      <script src="client/client.lua" type="client" />
      <script src="client/vehicle_damage_display.lua" type="client" />
@@ -16,7 +18,6 @@
      <script src="client/gui/timer.lua" type="client" />
      <script src="client/gui/logo.lua" type="client" />
      <script src="client/vehicle_blips.lua" type="client" />
-     <script src="server/rounds.lua" type="server" />
 
      <file src="fonts/ST-SimpleSquare.ttf" />
 

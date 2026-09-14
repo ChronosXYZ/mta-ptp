@@ -1,5 +1,3 @@
-gTeamSpawns = {}
-
 local teamWeapons = {
     [Teams.PRESIDENT.id] = { 3, 23, 25, 29 },      -- Nightstick, Silenced, Shotgun, MP5
     [Teams.SECRET_SERVICE.id] = { 3, 23, 25, 29 }, -- Nightstick, Silenced, Shotgun, MP5
@@ -29,21 +27,22 @@ local function spawnPlayerOnTeamBase(player, x, y, z, rotation, skinID, teamName
     spawnPlayer(player, x, y, z, rotation, skinID)
     setCameraTarget(player)
     setPlayerHudComponentVisible(player, "all", true)
-    if getRoundState() == "running" then
+    if RoundManager.is("running") then
         toggleAllControls(player, true, true, true)
+        setElementFrozen(player, false)
     else
         setElementFrozen(player, true)
         toggleAllControls(player, false, true, false)
     end
 
-    for _, weaponID in ipairs(teamWeapons[teamName]) do
-        giveWeapon(player, weaponID, 9999, false)
-    end
+    giveTeamWeapons(player, teamName)
 end
+
 local function enterTeamSelectMenu(player)
     setCameraMatrix(player, 1654.3691, -1643.5967, 85.176224, 1658.8364, -1545.6569, 65.482597)
     spawnPlayer(player, 1654.524, -1637.7119, 84.0, 180.0, 0)
     toggleAllControls(player, false, true, false)
+    setElementFrozen(player, true)
     setPlayerHudComponentVisible(player, "all", false)
     fadeCamera(player, true, 1.0)
     outputChatBox("Please select the class and skin of your player", player, 255, 255, 0)
@@ -52,17 +51,34 @@ end
 
 local function onPlayerTeamSelected(player, team, skinID)
     if type(team.id) ~= "string" or type(skinID) ~= "number" then
-        outputDebugString("OnPlayerTeamSelected: Invalid argument type")
+        outputDebugString("[GameRules] onPlayerTeamSelected: Invalid argument type", 1)
+        return
     end
 
     local selectedTeam = getTeamFromName(team.name)
-    ---@diagnostic disable-next-line: param-type-mismatch
     setPlayerTeam(player, selectedTeam)
     setElementData(player, "ptp.skinID", skinID)
     setPlayerNametagColor(player, team.color.r, team.color.g, team.color.b)
-    spawnPlayerOnTeamBase(player, gTeamSpawns[team.id][1], gTeamSpawns[team.id][2],
-        gTeamSpawns[team.id][3], gTeamSpawns[team.id][4], skinID, team.id)
+
+    local spawn = MapManager.getTeamSpawn(team.id)
+    if spawn then
+        spawnPlayerOnTeamBase(player, spawn[1], spawn[2], spawn[3], spawn[4], skinID, team.id)
+    else
+        outputDebugString("[GameRules] Spawn for team '" .. tostring(team.id) .. "' not found!", 1)
+    end
+
     triggerClientEvent(player, "onPlayerTeamSelectedSuccessful", resourceRoot)
+end
+
+local function selectPresident()
+    local players = getElementsByType("player")
+    if #players == 0 then
+        return
+    end
+    local president = players[math.random(1, #players)]
+    outputChatBox("You have been selected as the President for this round!", president, 255, 215, 0)
+    outputDebugString("[GameRules] Player " .. tostring(getPlayerName(president)) .. " selected as President")
+    onPlayerTeamSelected(president, Teams.PRESIDENT, 147)
 end
 
 local function onPlayerWasted()
@@ -73,58 +89,83 @@ local function onPlayerWasted()
     local teamName = getTeamName(team)
     local teamID = Teams_name_to_id[teamName]
     local skinID = getElementData(player, "ptp.skinID")
-    local spawn = gTeamSpawns[teamID]
-    setTimer(spawnPlayerAt, 3000, 1, player, spawn[1], spawn[2], spawn[3], spawn[4], skinID, teamID)
+    local spawn = MapManager.getTeamSpawn(teamID)
+    if spawn then
+        setTimer(spawnPlayerAt, 3000, 1, player, spawn[1], spawn[2], spawn[3], spawn[4], skinID, teamID)
+    end
 end
 
 local function vehicleSpawnHandler()
     setTimer(setElementHealth, 50, 1, source, getElementData(source, "health"))
 end
 
-addEventHandler("onVehicleRespawn", root, vehicleSpawnHandler)
+-- ============================================================================
+-- Round Lifecycle Event Handlers
+-- ============================================================================
+
+-- Round preparation: reset player teams and show class selection
+addEvent("ptp:onRoundPrepare", false)
+addEventHandler("ptp:onRoundPrepare", resourceRoot, function()
+    for _, player in ipairs(getElementsByType("player")) do
+        setPlayerTeam(player, nil)
+        enterTeamSelectMenu(player)
+    end
+end)
+
+-- Countdown tick: select President at 5 seconds remaining
+addEvent("ptp:onCountdownTick", false)
+addEventHandler("ptp:onCountdownTick", resourceRoot, function(remainingSecs)
+    if remainingSecs == 5 then
+        selectPresident()
+    end
+end)
+
+-- Round start: unfreeze players and enable controls
+addEvent("ptp:onRoundStart", false)
+addEventHandler("ptp:onRoundStart", root, function(mapName)
+    for _, player in ipairs(getElementsByType("player")) do
+        if getPlayerTeam(player) ~= nil then
+            setElementFrozen(player, false)
+            toggleAllControls(player, true, true, true)
+        end
+    end
+    outputChatBox("Round has started! Good luck!", root, 0, 255, 0)
+end)
+
+-- Round end: freeze players and disable controls
+addEvent("ptp:onRoundEnd", false)
+addEventHandler("ptp:onRoundEnd", root, function(mapName)
+    for _, player in ipairs(getElementsByType("player")) do
+        setElementFrozen(player, true)
+        toggleAllControls(player, false, true, false)
+    end
+end)
+
+-- ============================================================================
+-- Player & World Events
+-- ============================================================================
+
+addEvent("onClientReady", true)
+addEventHandler("onClientReady", resourceRoot, function()
+    outputChatBox("Welcome to Protect The President!", client, 255, 255, 0)
+    if RoundManager.is("idle") then
+        RoundManager.startCountdown()
+    else
+        enterTeamSelectMenu(client)
+    end
+end)
 
 addEvent("onPlayerTeamSelected", true)
 addEventHandler("onPlayerTeamSelected", resourceRoot, function(team, skinID)
     onPlayerTeamSelected(client, team, skinID)
 end)
 
-addEvent("onClientReady", true)
-addEventHandler("onClientReady", resourceRoot, function()
-    outputChatBox("Welcome to Protect The President!", client, 255, 255, 0)
-    if getRoundState() == "idle" then
-        loadMapOrStartCountdown()
-    else
-        enterTeamSelectMenu(client)
-    end
-end)
-
+addEventHandler("onVehicleRespawn", root, vehicleSpawnHandler)
 addEventHandler("onPlayerWasted", root, onPlayerWasted)
 
-addEvent("onRoundSelectPresident", true)
-addEventHandler("onRoundSelectPresident", root, function()
-    local players = getElementsByType("player")
-    if #players == 0 then
-        return
-    end
-    local president = players[math.random(1, #players)]
-    outputChatBox("You have been selected as the President for this round!", president, 255, 215, 0) -- FIXME
-    outputDebugString("Player " .. tostring(getPlayerName(president)) .. " selected as President")
-    onPlayerTeamSelected(president, Teams.PRESIDENT, 147)
-end)
-
-addEventHandler("onResourceStart", resourceRoot,
-    function()
-        createTeam(Teams.SECRET_SERVICE.name, 29, 253, 0)
-        createTeam(Teams.POLICE.name, 0, 23, 252)
-        createTeam(Teams.TERRORISTS.name, 251, 0, 0)
-        createTeam(Teams.PRESIDENT.name, 255, 255, 255)
-    end
-)
-
-addEvent("ptp:onRoundPrepare", false);
-addEventHandler("ptp:onRoundPrepare", resourceRoot, function()
-    for _, player in ipairs(getElementsByType("player")) do
-        setPlayerTeam(player, nil)
-        enterTeamSelectMenu(player)
-    end
+addEventHandler("onResourceStart", resourceRoot, function()
+    createTeam(Teams.SECRET_SERVICE.name, 29, 253, 0)
+    createTeam(Teams.POLICE.name, 0, 23, 252)
+    createTeam(Teams.TERRORISTS.name, 251, 0, 0)
+    createTeam(Teams.PRESIDENT.name, 255, 255, 255)
 end)

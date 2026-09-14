@@ -1,3 +1,10 @@
+function IsVehicleOccupied(vehicle)
+	assert(isElement(vehicle) and getElementType(vehicle) == "vehicle",
+		"Bad argument @ IsVehicleOccupied [expected vehicle, got " .. tostring(vehicle) .. "]")
+	local _, occupant = next(getVehicleOccupants(vehicle))
+	return occupant and true, occupant
+end
+
 local vehicleBlipRoot = createElement("vehicleBlipRoot", "vehicleBlipRoot")
 
 --This function creates a blip for all currently streamed-in vehicles when the resource starts.
@@ -33,6 +40,10 @@ local function streamIn()
 		if getElementAttachedTo(blip) == source then
 			return
 		end
+	end
+
+	if IsVehicleOccupied(source) then
+		return
 	end
 
 	local blip = createBlipAttachedTo(source, 0, 1, 150, 150, 150, 255, -10, 300)
