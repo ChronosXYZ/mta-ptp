@@ -81,16 +81,27 @@ local function selectPresident()
     onPlayerTeamSelected(president, Teams.PRESIDENT, 147)
 end
 
-local function onPlayerWasted()
+local function onPlayerWasted(totalAmmo, killer, killerWeapon, bodypart)
     local player = source
     local team = getPlayerTeam(player)
     if not team then return end
 
     local teamName = getTeamName(team)
     local teamID = Teams_name_to_id[teamName]
+
+    if teamID == Teams.PRESIDENT.id then
+        if killer and isElement(killer) and getElementType(killer) == "player" and killer ~= player then
+            outputChatBox("The President was assassinated by " .. getPlayerName(killer) .. "!", root, 255, 0, 0)
+        else
+            outputChatBox("The President has been killed!", root, 255, 0, 0)
+        end
+        RoundManager.endRound("president_killed")
+        return
+    end
+
     local skinID = getElementData(player, "ptp.skinID")
     local spawn = MapManager.getTeamSpawn(teamID)
-    if spawn then
+    if spawn and RoundManager.is("running") then
         setTimer(spawnPlayerAt, 3000, 1, player, spawn[1], spawn[2], spawn[3], spawn[4], skinID, teamID)
     end
 end
@@ -162,6 +173,14 @@ end)
 
 addEventHandler("onVehicleRespawn", root, vehicleSpawnHandler)
 addEventHandler("onPlayerWasted", root, onPlayerWasted)
+
+addEventHandler("onPlayerQuit", root, function()
+    local team = getPlayerTeam(source)
+    if team and getTeamName(team) == Teams.PRESIDENT.name and RoundManager.is("running") then
+        outputChatBox("The President has left the server!", root, 255, 0, 0)
+        RoundManager.endRound("president_quit")
+    end
+end)
 
 addEventHandler("onResourceStart", resourceRoot, function()
     createTeam(Teams.SECRET_SERVICE.name, 29, 253, 0)

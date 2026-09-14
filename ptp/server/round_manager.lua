@@ -70,9 +70,9 @@ function RoundManager.startCountdown()
     return false
 end
 
-function RoundManager.endRound()
+function RoundManager.endRound(reason)
     if RoundManager.is("running") then
-        stateMachine:end_round()
+        stateMachine:end_round(reason)
         return true
     end
     return false
@@ -138,16 +138,16 @@ function RoundManager.init()
                     if timeRemaining <= 0 then
                         killTimerIfExists(roundClockTimer)
                         roundClockTimer = nil
-                        stateMachine:end_round()
+                        stateMachine:end_round("timeout")
                     end
                 end, 1000, ROUND_TIME_SECONDS)
             end,
 
-            onround_end = function()
+            onround_end = function(_, _, _, _, reason)
                 clearAllTimers()
                 local currentMap = MapManager.getCurrentMap()
-                triggerEvent("ptp:onRoundEnd", root, currentMap)
-                triggerClientEvent(root, "ptp:onRoundEnd", resourceRoot, currentMap)
+                triggerEvent("ptp:onRoundEnd", root, currentMap, reason)
+                triggerClientEvent(root, "ptp:onRoundEnd", resourceRoot, reason, currentMap)
 
                 breakTimer = setTimer(function()
                     breakTimer = nil
