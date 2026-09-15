@@ -107,7 +107,7 @@ local function onPlayerWasted(totalAmmo, killer, killerWeapon, bodypart)
 end
 
 local function vehicleSpawnHandler()
-    setTimer(setElementHealth, 50, 1, source, getElementData(source, "health"))
+    setTimer(setElementHealth, 50, 1, source, getElementData(source, "health") or 1000)
 end
 
 -- ============================================================================
@@ -147,8 +147,10 @@ end)
 addEvent("ptp:onRoundEnd", false)
 addEventHandler("ptp:onRoundEnd", root, function(mapName)
     for _, player in ipairs(getElementsByType("player")) do
-        setElementFrozen(player, true)
-        toggleAllControls(player, false, true, false)
+        if not isPedDead(player) then
+            setElementFrozen(player, true)
+            toggleAllControls(player, false, true, false)
+        end
     end
 end)
 
