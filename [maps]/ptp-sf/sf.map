@@ -4,7 +4,6 @@
     <spawnpoint x="-2633.8" y="1361.7" z="7.1" team="terrorists" />
     <spawnpoint x="-1631.3" y="683.90002" z="7.2" rot="180" team="police" />
 
-
     <vehicle id="vehicle (ZR-350) (1)" sirens="false" landingGearDown="true" locked="false"
         plate="G8C55ZZ" paintjob="3" dimension="0" interior="0" health="1000" alpha="255"
         model="477" collisions="true" frozen="false" color="35,89,70,245,245,245,0,0,0,0,0,0"

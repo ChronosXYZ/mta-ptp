@@ -30,17 +30,14 @@ function MapManager.loadMap(mapName)
 
     teamSpawns = {}
     for _, v in ipairs(getElementsByType("spawnpoint")) do
-        local teamName = getElementData(v, "team")
-        if type(teamName) == "string" then
-            local teamKey = teamName:upper()
-            if Teams[teamKey] and Teams[teamKey].id == teamName then
-                teamSpawns[teamName] = {
-                    getElementData(v, "x"),
-                    getElementData(v, "y"),
-                    getElementData(v, "z"),
-                    getElementData(v, "rot")
-                }
-            end
+        local teamID = getElementData(v, "team")
+        if type(teamID) == "string" and Teams[teamID] then
+            teamSpawns[teamID] = {
+                getElementData(v, "x"),
+                getElementData(v, "y"),
+                getElementData(v, "z"),
+                getElementData(v, "rot")
+            }
         end
     end
 
@@ -69,8 +66,8 @@ function MapManager.unloadMap()
     return true
 end
 
-function MapManager.getTeamSpawn(teamId)
-    return teamSpawns[teamId]
+function MapManager.getTeamSpawn(teamID)
+    return teamSpawns[teamID]
 end
 
 function MapManager.getAllSpawns()

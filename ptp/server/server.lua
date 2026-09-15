@@ -1,12 +1,7 @@
-local teamWeapons = {
-    [Teams.PRESIDENT.id] = { 3, 23, 25, 29 },      -- Nightstick, Silenced, Shotgun, MP5
-    [Teams.SECRET_SERVICE.id] = { 3, 23, 25, 29 }, -- Nightstick, Silenced, Shotgun, MP5
-    [Teams.POLICE.id] = { 22, 25, 29, 31 },        -- Colt 45, Shotgun, MP5, M4
-    [Teams.TERRORISTS.id] = { 27, 28, 16, 30 }     -- Grenade, Combat Shotgun, Uzi, AK47
-}
+local teams = {}
 
-local function giveTeamWeapons(player, teamId)
-    local weapons = teamWeapons[teamId]
+local function giveTeamWeapons(player, teamID)
+    local weapons = Teams[teamID].weapons
     if not weapons then return end
     for _, weaponID in ipairs(weapons) do
         giveWeapon(player, weaponID, 9999, false)
@@ -22,7 +17,7 @@ local function getTeamSelectDimension()
     return teamSelectDimCounter
 end
 
-local function spawnPlayerAt(player, x, y, z, rotation, skinID, teamId)
+local function spawnPlayerAt(player, x, y, z, rotation, skinID, teamID)
     showCursor(player, false)
     spawnPlayer(player, x, y, z, rotation, skinID, 0, 0)
     setElementDimension(player, 0)
@@ -31,10 +26,10 @@ local function spawnPlayerAt(player, x, y, z, rotation, skinID, teamId)
     setCameraTarget(player)
     setPlayerHudComponentVisible(player, "all", true)
     toggleAllControls(player, true, true, true)
-    giveTeamWeapons(player, teamId)
+    giveTeamWeapons(player, teamID)
 end
 
-local function spawnPlayerOnTeamBase(player, x, y, z, rotation, skinID, teamName)
+local function spawnPlayerOnTeamBase(player, x, y, z, rotation, skinID, teamID)
     showCursor(player, false)
     spawnPlayer(player, x, y, z, rotation, skinID, 0, 0)
     setElementDimension(player, 0)
@@ -50,7 +45,7 @@ local function spawnPlayerOnTeamBase(player, x, y, z, rotation, skinID, teamName
         toggleAllControls(player, false, true, false)
     end
 
-    giveTeamWeapons(player, teamName)
+    giveTeamWeapons(player, teamID)
 end
 
 local function enterTeamSelectMenu(player)
@@ -68,22 +63,28 @@ local function enterTeamSelectMenu(player)
     triggerClientEvent(player, "enterTeamSelectMenu", resourceRoot)
 end
 
-local function onPlayerTeamSelected(player, team, skinID)
-    if type(team) ~= "table" or type(team.id) ~= "string" or type(skinID) ~= "number" then
+local function onPlayerTeamSelected(player, teamID, skinID)
+    if type(teamID) ~= "string" or type(skinID) ~= "number" then
         outputDebugString("[GameRules] onPlayerTeamSelected: Invalid argument type", 1)
         return
     end
 
-    local selectedTeam = getTeamFromName(team.name)
+    local selectedTeam = teams[teamID]
+    local teamMeta = Teams[teamID]
+    if not selectedTeam or not teamMeta then
+        outputDebugString("[GameRules] onPlayerTeamSelected: Invalid team ID '" .. tostring(teamID) .. "'", 1)
+        return
+    end
+
     setPlayerTeam(player, selectedTeam)
     setElementData(player, "ptp.skinID", skinID)
-    setPlayerNametagColor(player, team.color.r, team.color.g, team.color.b)
+    setPlayerNametagColor(player, teamMeta.color.r, teamMeta.color.g, teamMeta.color.b)
 
-    local spawn = MapManager.getTeamSpawn(team.id)
+    local spawn = MapManager.getTeamSpawn(teamID)
     if spawn then
-        spawnPlayerOnTeamBase(player, spawn[1], spawn[2], spawn[3], spawn[4], skinID, team.id)
+        spawnPlayerOnTeamBase(player, spawn[1], spawn[2], spawn[3], spawn[4], skinID, teamID)
     else
-        outputDebugString("[GameRules] Spawn for team '" .. tostring(team.id) .. "' not found!", 1)
+        outputDebugString("[GameRules] Spawn for team '" .. tostring(teamID) .. "' not found!", 1)
     end
 
     triggerClientEvent(player, "onPlayerTeamSelectedSuccessful", resourceRoot)
@@ -97,7 +98,7 @@ local function selectPresident()
     local president = players[math.random(1, #players)]
     outputChatBox("You have been selected as the President for this round!", president, 255, 215, 0)
     outputDebugString("[GameRules] Player " .. tostring(getPlayerName(president)) .. " selected as President")
-    onPlayerTeamSelected(president, Teams.PRESIDENT, 147)
+    onPlayerTeamSelected(president, TEAM_PRESIDENT, 147)
 end
 
 local function onPlayerWasted(totalAmmo, killer, killerWeapon, bodypart)
@@ -105,10 +106,9 @@ local function onPlayerWasted(totalAmmo, killer, killerWeapon, bodypart)
     local team = getPlayerTeam(player)
     if not team then return end
 
-    local teamName = getTeamName(team)
-    local teamID = Teams_name_to_id[teamName]
+    local teamID = getTeamID(team)
 
-    if teamID == Teams.PRESIDENT.id then
+    if teamID == TEAM_PRESIDENT then
         if killer and isElement(killer) and getElementType(killer) == "player" and killer ~= player then
             outputChatBox("The President was assassinated by " .. getPlayerName(killer) .. "!", root, 255, 0, 0)
         else
@@ -188,8 +188,8 @@ addEventHandler("onClientReady", resourceRoot, function()
 end)
 
 addEvent("onPlayerTeamSelected", true)
-addEventHandler("onPlayerTeamSelected", resourceRoot, function(team, skinID)
-    onPlayerTeamSelected(client, team, skinID)
+addEventHandler("onPlayerTeamSelected", resourceRoot, function(teamID, skinID)
+    onPlayerTeamSelected(client, teamID, skinID)
 end)
 
 addEventHandler("onVehicleRespawn", root, vehicleSpawnHandler)
@@ -197,15 +197,27 @@ addEventHandler("onPlayerWasted", root, onPlayerWasted)
 
 addEventHandler("onPlayerQuit", root, function()
     local team = getPlayerTeam(source)
-    if team and getTeamName(team) == Teams.PRESIDENT.name and RoundManager.is("running") then
+    if team and getTeamID(team) == TEAM_PRESIDENT and RoundManager.is("running") then
         outputChatBox("The President has left the server!", root, 255, 0, 0)
         RoundManager.endRound("president_quit")
     end
 end)
 
+local function initTeams()
+    for id, t in pairs(Teams) do
+        local team = createTeam(id, t.color.r, t.color.g, t.color.b)
+        setTeamID(team, id)
+        setTeamFriendlyFire(team, false)
+        teams[id] = team
+    end
+end
+
+-- init resource
+
+local function init()
+    initTeams()
+end
+
 addEventHandler("onResourceStart", resourceRoot, function()
-    createTeam(Teams.SECRET_SERVICE.name, 29, 253, 0)
-    createTeam(Teams.POLICE.name, 0, 23, 252)
-    createTeam(Teams.TERRORISTS.name, 251, 0, 0)
-    createTeam(Teams.PRESIDENT.name, 255, 255, 255)
+    init()
 end)

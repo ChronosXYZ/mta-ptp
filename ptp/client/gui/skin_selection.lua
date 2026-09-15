@@ -80,7 +80,7 @@ local function createGui()
     dgsSetVisible(secretServiceTeamButton, false)
     addEventHandler("onDgsMouseClickUp", secretServiceTeamButton, function(button)
         if button == "left" then
-            SkinSelectionMenu.selectSecretService()
+            SkinSelectionMenu.selectTeam(TEAM_SECRET_SERVICE, SECRET_SERVICE_SKINS)
         end
     end, false)
 
@@ -100,7 +100,7 @@ local function createGui()
     dgsSetVisible(policeTeamButton, false)
     addEventHandler("onDgsMouseClickUp", policeTeamButton, function(button)
         if button == "left" then
-            SkinSelectionMenu.selectPolice()
+            SkinSelectionMenu.selectTeam(TEAM_POLICE, POLICE_SKINS)
         end
     end, false)
 
@@ -120,7 +120,7 @@ local function createGui()
     dgsSetVisible(terroristsTeamButton, false)
     addEventHandler("onDgsMouseClickUp", terroristsTeamButton, function(button)
         if button == "left" then
-            SkinSelectionMenu.selectTerrorists()
+            SkinSelectionMenu.selectTeam(TEAM_TERRORISTS, TERRORISTS_SKINS)
         end
     end, false)
 end
@@ -140,11 +140,11 @@ function SkinSelectionMenu.updateButtonSelections()
     local selectedOutline = { "in", 3, tocolor(255, 255, 255, 255) }
 
     dgsSetProperty(secretServiceTeamButton, "outline",
-        teamSelected == Teams.SECRET_SERVICE and selectedOutline or false)
+        teamSelected == TEAM_SECRET_SERVICE and selectedOutline or false)
     dgsSetProperty(policeTeamButton, "outline",
-        teamSelected == Teams.POLICE and selectedOutline or false)
+        teamSelected == TEAM_POLICE and selectedOutline or false)
     dgsSetProperty(terroristsTeamButton, "outline",
-        teamSelected == Teams.TERRORISTS and selectedOutline or false)
+        teamSelected == TEAM_TERRORISTS and selectedOutline or false)
 end
 
 function SkinSelectionMenu.updateSkinCounter()
@@ -153,27 +153,9 @@ function SkinSelectionMenu.updateSkinCounter()
     end
 end
 
-function SkinSelectionMenu.selectSecretService()
-    teamSelected = Teams.SECRET_SERVICE
-    currentSkinArray = SECRET_SERVICE_SKINS
-    currentSkinIndex = 1
-    setElementModel(localPlayer, currentSkinArray[currentSkinIndex])
-    SkinSelectionMenu.updateButtonSelections()
-    SkinSelectionMenu.updateSkinCounter()
-end
-
-function SkinSelectionMenu.selectPolice()
-    teamSelected = Teams.POLICE
-    currentSkinArray = POLICE_SKINS
-    currentSkinIndex = 1
-    setElementModel(localPlayer, currentSkinArray[currentSkinIndex])
-    SkinSelectionMenu.updateButtonSelections()
-    SkinSelectionMenu.updateSkinCounter()
-end
-
-function SkinSelectionMenu.selectTerrorists()
-    teamSelected = Teams.TERRORISTS
-    currentSkinArray = TERRORISTS_SKINS
+function SkinSelectionMenu.selectTeam(teamID, skinArray)
+    teamSelected = teamID
+    currentSkinArray = skinArray
     currentSkinIndex = 1
     setElementModel(localPlayer, currentSkinArray[currentSkinIndex])
     SkinSelectionMenu.updateButtonSelections()
@@ -235,7 +217,8 @@ function SkinSelectionMenu.open()
 
     showCursor(true)
     setVisible(true)
-    SkinSelectionMenu.selectSecretService()
+
+    SkinSelectionMenu.selectTeam(TEAM_SECRET_SERVICE, SECRET_SERVICE_SKINS)
 
     bindKey("arrow_l", "down", onSwitchLeft)
     bindKey("arrow_r", "down", onSwitchRight)
@@ -259,9 +242,6 @@ end
 function SkinSelectionMenu.isOpen()
     return isOpen
 end
-
--- Backwards compatibility
-skinSelectionMenu = SkinSelectionMenu
 
 addEventHandler("onClientResourceStart", resourceRoot, function()
     createGui()
