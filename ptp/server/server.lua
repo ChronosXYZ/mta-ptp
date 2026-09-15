@@ -13,9 +13,21 @@ local function giveTeamWeapons(player, teamId)
     end
 end
 
+local teamSelectDimCounter = 1000
+local function getTeamSelectDimension()
+    teamSelectDimCounter = teamSelectDimCounter + 1
+    if teamSelectDimCounter > 60000 then
+        teamSelectDimCounter = 1000
+    end
+    return teamSelectDimCounter
+end
+
 local function spawnPlayerAt(player, x, y, z, rotation, skinID, teamId)
     showCursor(player, false)
-    spawnPlayer(player, x, y, z, rotation, skinID)
+    spawnPlayer(player, x, y, z, rotation, skinID, 0, 0)
+    setElementDimension(player, 0)
+    setElementInterior(player, 0)
+    setElementCollisionsEnabled(player, true)
     setCameraTarget(player)
     setPlayerHudComponentVisible(player, "all", true)
     toggleAllControls(player, true, true, true)
@@ -24,7 +36,10 @@ end
 
 local function spawnPlayerOnTeamBase(player, x, y, z, rotation, skinID, teamName)
     showCursor(player, false)
-    spawnPlayer(player, x, y, z, rotation, skinID)
+    spawnPlayer(player, x, y, z, rotation, skinID, 0, 0)
+    setElementDimension(player, 0)
+    setElementInterior(player, 0)
+    setElementCollisionsEnabled(player, true)
     setCameraTarget(player)
     setPlayerHudComponentVisible(player, "all", true)
     if RoundManager.is("running") then
@@ -39,8 +54,12 @@ local function spawnPlayerOnTeamBase(player, x, y, z, rotation, skinID, teamName
 end
 
 local function enterTeamSelectMenu(player)
+    local dim = getTeamSelectDimension()
     setCameraMatrix(player, 1654.3691, -1643.5967, 85.176224, 1658.8364, -1545.6569, 65.482597)
-    spawnPlayer(player, 1654.524, -1637.7119, 84.0, 180.0, 0)
+    spawnPlayer(player, 1654.524, -1637.7119, 84.0, 180.0, 0, 0, dim)
+    setElementDimension(player, dim)
+    setElementInterior(player, 0)
+    setElementCollisionsEnabled(player, false)
     toggleAllControls(player, false, true, false)
     setElementFrozen(player, true)
     setPlayerHudComponentVisible(player, "all", false)
@@ -50,7 +69,7 @@ local function enterTeamSelectMenu(player)
 end
 
 local function onPlayerTeamSelected(player, team, skinID)
-    if type(team.id) ~= "string" or type(skinID) ~= "number" then
+    if type(team) ~= "table" or type(team.id) ~= "string" or type(skinID) ~= "number" then
         outputDebugString("[GameRules] onPlayerTeamSelected: Invalid argument type", 1)
         return
     end
