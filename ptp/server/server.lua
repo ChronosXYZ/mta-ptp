@@ -17,23 +17,23 @@ local function getTeamSelectDimension()
     return teamSelectDimCounter
 end
 
-local function spawnPlayerAt(player, x, y, z, rotation, skinID, teamID)
-    showCursor(player, false)
-    spawnPlayer(player, tonumber(x) or 0, tonumber(y) or 0, tonumber(z) or 0, tonumber(rotation) or 0,
-        tonumber(skinID) or 0, 0, 0)
-    setElementDimension(player, 0)
-    setElementInterior(player, 0)
-    setElementCollisionsEnabled(player, true)
-    setCameraTarget(player)
-    setPlayerHudComponentVisible(player, "all", true)
-    toggleAllControls(player, true, true, true)
-    giveTeamWeapons(player, teamID)
+local SPAWN_RANDOM_RADIUS = 2.5
+
+local function getRandomizedSpawnPosition(x, y, teamID)
+    local numX = tonumber(x) or 0
+    local numY = tonumber(y) or 0
+    if teamID == TEAM_PRESIDENT then
+        return numX, numY
+    end
+    local angle = math.random() * 2 * math.pi
+    local dist = 0.5 + math.random() * (SPAWN_RANDOM_RADIUS - 0.5)
+    return numX + math.cos(angle) * dist, numY + math.sin(angle) * dist
 end
 
 local function spawnPlayerOnTeamBase(player, x, y, z, rotation, skinID, teamID)
     showCursor(player, false)
-    spawnPlayer(player, tonumber(x) or 0, tonumber(y) or 0, tonumber(z) or 0, tonumber(rotation) or 0,
-        tonumber(skinID) or 0, 0, 0)
+    local spawnX, spawnY = getRandomizedSpawnPosition(x, y, teamID)
+    spawnPlayer(player, spawnX, spawnY, tonumber(z) or 0, tonumber(rotation) or 0, tonumber(skinID) or 0, 0, 0)
     setElementDimension(player, 0)
     setElementInterior(player, 0)
     setElementCollisionsEnabled(player, true)
@@ -125,7 +125,7 @@ local function onPlayerWasted(totalAmmo, killer, killerWeapon, bodypart)
     local skinID = getElementData(player, "ptp.skinID")
     local spawn = MapManager.getTeamSpawn(teamID)
     if spawn and RoundManager.is("running") then
-        setTimer(spawnPlayerAt, 3000, 1, player, spawn[1], spawn[2], spawn[3], spawn[4], skinID, teamID)
+        setTimer(spawnPlayerOnTeamBase, 3000, 1, player, spawn[1], spawn[2], spawn[3], spawn[4], skinID, teamID)
     end
 end
 
@@ -219,6 +219,7 @@ end
 -- init resource
 
 local function init()
+    math.randomseed(getTickCount())
     initTeams()
 end
 
