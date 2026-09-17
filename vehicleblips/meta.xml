@@ -1,0 +1,5 @@
+<meta>
+    <min_mta_version server="1.5.8-9.20957"></min_mta_version>
+    <info type="misc" name="vehicleblips" author="ChronosXYZ" version="1.0"></info>
+    <script src="vehicle_blips.lua" type="client" />
+</meta>

@@ -11,7 +11,7 @@ local vehicleBlipRoot = createElement("vehicleBlipRoot", "vehicleBlipRoot")
 local function resourceStart()
 	for _, vehicle in ipairs(getElementsByType("vehicle", root, true)) do
 		if vehicle ~= getPedOccupiedVehicle(localPlayer) then
-			local blip = createBlipAttachedTo(vehicle, 0, 1, 150, 150, 150, 255, -10, 300)
+			local blip = createBlipAttachedTo(vehicle, 0, 1, 150, 150, 150, 150, -10, 300)
 			setElementParent(blip, vehicleBlipRoot)
 		end
 	end
