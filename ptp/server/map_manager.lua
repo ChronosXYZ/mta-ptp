@@ -1,4 +1,4 @@
-local MAPS = { "ptp-ls", "ptp-sf" }
+local MAPS = { "ptp-ls", "ptp-sf", "ptp-lv" }
 local VEHICLE_IDLE_RESPAWN_DELAY = 2 * 60 * 1000 -- 2 minutes
 
 local currentMap = nil

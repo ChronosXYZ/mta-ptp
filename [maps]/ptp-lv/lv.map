@@ -1,0 +1,13 @@
+<map>
+    <spawnpoint x="2024.1" y="1342.8" z="10.8" rot="270" team="president" />
+    <spawnpoint x="2024.1" y="1342.8" z="10.8" rot="270" team="secret_service" />
+    <spawnpoint x="2292.6" y="2451.3" z="10.8" rot="90" team="police" />
+    <spawnpoint x="1475.3" y="2274.1" z="10.8" rot="270" team="terrorists" />
+
+    <maplimit>
+        <point x="3000.0" y="3000.0" />
+        <point x="3000.0" y="500.0" />
+        <point x="843.0" y="584.0" />
+        <point x="611.0" y="3000.0" />
+    </maplimit>
+</map>
