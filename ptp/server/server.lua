@@ -205,7 +205,7 @@ end)
 
 local function initTeams()
     for id, t in pairs(Teams) do
-        local team = createTeam(id, t.color.r, t.color.g, t.color.b)
+        local team = createTeam(t.name, t.color.r, t.color.g, t.color.b)
         setTeamID(team, id)
         setTeamFriendlyFire(team, false)
         teams[id] = team

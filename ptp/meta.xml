@@ -18,7 +18,7 @@
      <script src="client/gui/logo.lua" type="client" />
      <script src="client/gui/skin_selection.lua" type="client" />
 
-     <map src="util/cars.map" dimension="0" />
+     <include resource="ptp-vehicles" />
 
      <file src="fonts/ST-SimpleSquare.ttf" />
 
