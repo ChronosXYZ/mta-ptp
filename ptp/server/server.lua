@@ -19,7 +19,8 @@ end
 
 local function spawnPlayerAt(player, x, y, z, rotation, skinID, teamID)
     showCursor(player, false)
-    spawnPlayer(player, x, y, z, rotation, skinID, 0, 0)
+    spawnPlayer(player, tonumber(x) or 0, tonumber(y) or 0, tonumber(z) or 0, tonumber(rotation) or 0,
+        tonumber(skinID) or 0, 0, 0)
     setElementDimension(player, 0)
     setElementInterior(player, 0)
     setElementCollisionsEnabled(player, true)
@@ -31,7 +32,8 @@ end
 
 local function spawnPlayerOnTeamBase(player, x, y, z, rotation, skinID, teamID)
     showCursor(player, false)
-    spawnPlayer(player, x, y, z, rotation, skinID, 0, 0)
+    spawnPlayer(player, tonumber(x) or 0, tonumber(y) or 0, tonumber(z) or 0, tonumber(rotation) or 0,
+        tonumber(skinID) or 0, 0, 0)
     setElementDimension(player, 0)
     setElementInterior(player, 0)
     setElementCollisionsEnabled(player, true)
@@ -50,8 +52,10 @@ end
 
 local function enterTeamSelectMenu(player)
     local dim = getTeamSelectDimension()
-    setCameraMatrix(player, 1654.3691, -1643.5967, 85.176224, 1658.8364, -1545.6569, 65.482597)
-    spawnPlayer(player, 1654.524, -1637.7119, 84.0, 180.0, 0, 0, dim)
+    local cam = MapManager.getSkinSelectionCamera()
+    local spawn = MapManager.getSkinSelectionSpawn()
+    setCameraMatrix(player, cam.x, cam.y, cam.z, cam.lookX, cam.lookY, cam.lookZ)
+    spawnPlayer(player, spawn.x, spawn.y, spawn.z, spawn.rot, 0, 0, dim)
     setElementDimension(player, dim)
     setElementInterior(player, 0)
     setElementCollisionsEnabled(player, false)

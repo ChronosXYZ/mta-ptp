@@ -4,6 +4,13 @@
     <spawnpoint x="2292.6" y="2451.3" z="10.8" rot="90" team="police" />
     <spawnpoint x="1475.3" y="2274.1" z="10.8" rot="270" team="terrorists" />
 
+    <skinselection>
+        <camera x="1955.7348632812" y="1239.9456787109" z="64.117919921875"
+            lookX="2024.1569824219" lookY="1309.5177001953" lookZ="42.251056671143" />
+        <spawnpoint x="1959.5999755859" y="1243.9000244141" z="62.900001525879" rot="134.499450" />
+    </skinselection>
+
+
     <maplimit>
         <point x="3000.0" y="3000.0" />
         <point x="3000.0" y="500.0" />

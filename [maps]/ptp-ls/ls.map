@@ -1,8 +1,14 @@
-<map edf:definitions="ptp">
+<map>
     <spawnpoint x="1261.5" y="-2024.9" z="59.4" rot="90" team="president" />
     <spawnpoint x="1261.5" y="-2024.9" z="59.4" rot="90" team="secret_service" />
     <spawnpoint x="1532.6" y="-1677.3" z="5.9" rot="270" team="police" />
     <spawnpoint x="1774.0" y="-1926.5" z="13.5" rot="270" team="terrorists" />
+
+    <skinselection>
+        <camera x="1654.3691" y="-1643.5967" z="85.176224"
+            lookX="1658.8364" lookY="-1545.6569" lookZ="65.482597" />
+        <spawnpoint x="1654.524" y="-1637.7119" z="84.0" rot="180" />
+    </skinselection>
 
     <vehicle id="vehicle (ZR-350) (1)" sirens="false" landingGearDown="true" locked="false"
         plate="G8C55ZZ" paintjob="3" dimension="0" interior="0" health="1000" alpha="255"

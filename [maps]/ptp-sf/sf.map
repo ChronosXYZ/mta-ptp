@@ -1,8 +1,14 @@
 <map>
     <spawnpoint x="-2764.8" y="-304.39999" z="7" rot="180" team="president" />
     <spawnpoint x="-2764.8" y="-304.39999" z="7" rot="180" team="secret_service" />
-    <spawnpoint x="-2633.8" y="1361.7" z="7.1" team="terrorists" />
+    <spawnpoint x="-2633.8" y="1361.7" z="7.1" rot="270" team="terrorists" />
     <spawnpoint x="-1631.3" y="683.90002" z="7.2" rot="180" team="police" />
+
+    <skinselection>
+        <camera x="-1741.2286376953" y="789.76190185547" z="169.14360046387"
+            lookX="-1644.4510498047" lookY="785.73712158203" lookZ="144.28594970703" />
+        <spawnpoint x="-1735.5" y="789.5" z="167.69999694824" rot="87.3508911" />
+    </skinselection>
 
     <maplimit>
         <point x="-2985.0" y="2996.2" />
