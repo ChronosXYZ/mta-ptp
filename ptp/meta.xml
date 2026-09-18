@@ -19,6 +19,7 @@
      <script src="client/gui/skin_selection.lua" type="client" />
 
      <include resource="ptp-vehicles" />
+     <include resource="dgs" />
 
      <file src="fonts/ST-SimpleSquare.ttf" />
 
