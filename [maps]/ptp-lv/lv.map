@@ -17,4 +17,113 @@
         <point x="843.0" y="584.0" />
         <point x="611.0" y="3000.0" />
     </maplimit>
+
+    <vehicle id="vehicle (FBI Rancher) (1)" sirens="false" landingGearDown="false" plate="HDMX 6K4"
+        paintjob="0" dimension="0" interior="0" health="2000" alpha="255" model="490"
+        collisions="true" posX="2029.2" posY="1366.2" posZ="11.1" rotX="0" rotY="0" rotZ="269.8"
+        scale="1" color="0,0,0,0,0,0,0,0,0,0,0,0"></vehicle>
+    <vehicle id="vehicle (Cheetah) (1)" sirens="false" landingGearDown="false" plate="QH51 NZU"
+        paintjob="3" dimension="0" interior="0" health="2000" alpha="255" model="415"
+        collisions="true" posX="2017.9" posY="1351.5" posZ="9.5" rotX="8" rotY="0" rotZ="269.8"
+        scale="1" color="0,0,0,245,245,245,0,0,0,0,0,0"></vehicle>
+    <vehicle id="vehicle (Cheetah) (2)" sirens="false" landingGearDown="false" plate="8E7Y VT2"
+        paintjob="3" dimension="0" interior="0" health="2000" alpha="255" model="415"
+        collisions="true" posX="2024.4" posY="1334.7" posZ="10.4" rotX="7.998" rotY="0"
+        rotZ="269.797" scale="1" color="0,0,0,245,245,245,0,0,0,0,0,0"></vehicle>
+    <vehicle id="vehicle (FBI Rancher) (2)" sirens="false" landingGearDown="false" plate="8BQN AAF"
+        paintjob="0" dimension="0" interior="0" health="2000" alpha="255" model="490"
+        collisions="true" posX="2029.3" posY="1321.3" posZ="11.1" rotX="0" rotY="0" rotZ="269.797"
+        scale="1" color="0,0,0,0,0,0,0,0,0,0,0,0"></vehicle>
+    <vehicle id="vehicle (FBI Rancher) (3)" sirens="false" landingGearDown="false" plate="JU4J S88"
+        paintjob="0" dimension="0" interior="0" health="2000" alpha="255" model="490"
+        collisions="true" posX="2029.3" posY="1325.8" posZ="11.1" rotX="0" rotY="0" rotZ="269.797"
+        scale="1" color="0,0,0,0,0,0,0,0,0,0,0,0"></vehicle>
+    <vehicle id="vehicle (FBI Rancher) (4)" sirens="false" landingGearDown="false" plate="QT30 LFV"
+        paintjob="0" dimension="0" interior="0" health="2000" alpha="255" model="490"
+        collisions="true" posX="2029.2" posY="1316.7" posZ="11.1" rotX="0" rotY="0" rotZ="269.797"
+        scale="1" color="0,0,0,0,0,0,0,0,0,0,0,0"></vehicle>
+    <vehicle id="vehicle (FBI Rancher) (5)" sirens="false" landingGearDown="false" plate="F0SK AXD"
+        paintjob="0" dimension="0" interior="0" health="2000" alpha="255" model="490"
+        collisions="true" posX="2029.2" posY="1312.1" posZ="11.1" rotX="0" rotY="0" rotZ="269.797"
+        scale="1" color="0,0,0,0,0,0,0,0,0,0,0,0"></vehicle>
+    <vehicle id="vehicle (FBI Rancher) (6)" sirens="false" landingGearDown="false" plate="KBHO 7Q0"
+        paintjob="0" dimension="0" interior="0" health="2000" alpha="255" model="490"
+        collisions="true" posX="2029.2" posY="1302.8" posZ="11.1" rotX="0" rotY="0" rotZ="269.797"
+        scale="1" color="0,0,0,0,0,0,0,0,0,0,0,0"></vehicle>
+    <vehicle id="vehicle (FBI Rancher) (7)" sirens="false" landingGearDown="false" plate="2ZK7 05I"
+        paintjob="0" dimension="0" interior="0" health="2000" alpha="255" model="490"
+        collisions="true" posX="2029.3" posY="1307.5" posZ="11.1" rotX="0" rotY="0" rotZ="269.797"
+        scale="1" color="0,0,0,0,0,0,0,0,0,0,0,0"></vehicle>
+    <vehicle id="vehicle (FBI Rancher) (8)" sirens="false" landingGearDown="false" plate="04PY FLB"
+        paintjob="0" dimension="0" interior="0" health="2000" alpha="255" model="490"
+        collisions="true" posX="2029.2998" posY="1330.4004" posZ="11.1" rotX="0" rotY="0"
+        rotZ="269.797" scale="1" color="0,0,0,0,0,0,0,0,0,0,0,0"></vehicle>
+    <vehicle id="vehicle (FBI Rancher) (9)" sirens="false" landingGearDown="false" plate="47RF TMZ"
+        paintjob="0" dimension="0" interior="0" health="2000" alpha="255" model="490"
+        collisions="true" posX="2029.1" posY="1356.9" posZ="11.1" rotX="0" rotY="0" rotZ="269.797"
+        scale="1" color="0,0,0,0,0,0,0,0,0,0,0,0"></vehicle>
+    <vehicle id="vehicle (FBI Rancher) (10)" sirens="false" landingGearDown="false" plate="N0PP JLT"
+        paintjob="0" dimension="0" interior="0" health="2000" alpha="255" model="490"
+        collisions="true" posX="2029.2" posY="1361.7" posZ="11.1" rotX="0" rotY="0" rotZ="269.797"
+        scale="1" color="0,0,0,0,0,0,0,0,0,0,0,0"></vehicle>
+    <vehicle id="vehicle (FBI Rancher) (11)" sirens="false" landingGearDown="false" plate="I5SH K4T"
+        paintjob="0" dimension="0" interior="0" health="2000" alpha="255" model="490"
+        collisions="true" posX="2029.2" posY="1370.6" posZ="11.1" rotX="0" rotY="0" rotZ="269.797"
+        scale="1" color="0,0,0,0,0,0,0,0,0,0,0,0"></vehicle>
+    <vehicle id="vehicle (FBI Rancher) (12)" sirens="false" landingGearDown="false" plate="NAV7 UNO"
+        paintjob="0" dimension="0" interior="0" health="2000" alpha="255" model="490"
+        collisions="true" posX="2029.2" posY="1375.1" posZ="11.1" rotX="0" rotY="0" rotZ="269.797"
+        scale="1" color="0,0,0,0,0,0,0,0,0,0,0,0"></vehicle>
+    <vehicle id="vehicle (FBI Rancher) (13)" sirens="false" landingGearDown="false" plate="BOKU DHC"
+        paintjob="0" dimension="0" interior="0" health="2000" alpha="255" model="490"
+        collisions="true" posX="2029.2" posY="1379.6" posZ="11.1" rotX="0" rotY="0" rotZ="269.797"
+        scale="1" color="0,0,0,0,0,0,0,0,0,0,0,0"></vehicle>
+    <vehicle id="vehicle (FBI Rancher) (14)" sirens="false" landingGearDown="false" plate="4PHN W6V"
+        paintjob="0" dimension="0" interior="0" health="2000" alpha="255" model="490"
+        collisions="true" posX="2029.2" posY="1384.2" posZ="11.1" rotX="0" rotY="0" rotZ="269.797"
+        scale="1" color="0,0,0,0,0,0,0,0,0,0,0,0"></vehicle>
+    <vehicle id="vehicle (Cheetah) (3)" sirens="false" landingGearDown="false" plate="LUSR FBL"
+        paintjob="3" dimension="0" interior="0" health="2000" alpha="255" model="415"
+        collisions="true" posX="2018" posY="1334.7" posZ="9.6" rotX="7.998" rotY="0" rotZ="269.797"
+        scale="1" color="0,0,0,245,245,245,0,0,0,0,0,0"></vehicle>
+    <vehicle id="vehicle (Cheetah) (4)" sirens="false" landingGearDown="false" plate="XCAA AYU"
+        paintjob="3" dimension="0" interior="0" health="2000" alpha="255" model="415"
+        collisions="true" posX="2024.4004" posY="1351.5" posZ="10.4" rotX="7.998" rotY="0"
+        rotZ="269.797" scale="1" color="0,0,0,245,245,245,0,0,0,0,0,0"></vehicle>
+    <vehicle id="vehicle (Cheetah) (5)" sirens="false" landingGearDown="false" plate="X3PV P3F"
+        paintjob="3" dimension="0" interior="0" health="1000" alpha="255" model="415"
+        collisions="true" posX="2256.1001" posY="2477.3" posZ="10.7" rotX="0" rotY="0" rotZ="180.4"
+        scale="1" color="0,0,0,245,245,245,0,0,0,0,0,0"></vehicle>
+    <vehicle id="vehicle (Cheetah) (6)" sirens="false" landingGearDown="false" plate="94E9 SIV"
+        paintjob="3" dimension="0" interior="0" health="1000" alpha="255" model="415"
+        collisions="true" posX="2252" posY="2477.2002" posZ="10.7" rotX="0" rotY="0" rotZ="180.396"
+        scale="1" color="0,0,0,245,245,245,0,0,0,0,0,0"></vehicle>
+    <vehicle id="vehicle (Cheetah) (7)" sirens="false" landingGearDown="false" plate="W0WP F08"
+        paintjob="3" dimension="0" interior="0" health="1000" alpha="255" model="415"
+        collisions="true" posX="2260.6001" posY="2476.8999" posZ="10.7" rotX="0" rotY="0"
+        rotZ="180.396" scale="1" color="0,0,0,0,0,0,0,0,0,0,0,0"></vehicle>
+    <vehicle id="vehicle (Police LV) (1)" sirens="false" landingGearDown="false" plate="2EPE HWF"
+        paintjob="3" dimension="0" interior="0" health="1000" alpha="255" model="598"
+        collisions="true" posX="2268.7" posY="2476.8" posZ="10.7" rotX="0" rotY="0" rotZ="180.4"
+        scale="1" color="0,0,0,245,245,245,0,0,0,0,0,0"></vehicle>
+    <vehicle id="vehicle (Police LV) (2)" sirens="false" landingGearDown="false" plate="KXOT JA7"
+        paintjob="3" dimension="0" interior="0" health="1000" alpha="255" model="598"
+        collisions="true" posX="2282.3" posY="2476.8" posZ="10.7" rotX="0" rotY="0" rotZ="180.396"
+        scale="1" color="0,0,0,245,245,245,0,0,0,0,0,0"></vehicle>
+    <vehicle id="vehicle (Police LV) (3)" sirens="false" landingGearDown="false" plate="VZ1U RFL"
+        paintjob="3" dimension="0" interior="0" health="1000" alpha="255" model="598"
+        collisions="true" posX="2273.2002" posY="2476.7002" posZ="10.7" rotX="0" rotY="0"
+        rotZ="180.391" scale="1" color="0,0,0,245,245,245,0,0,0,0,0,0"></vehicle>
+    <vehicle id="vehicle (Police LV) (4)" sirens="false" landingGearDown="false" plate="A8BD V0O"
+        paintjob="3" dimension="0" interior="0" health="1000" alpha="255" model="598"
+        collisions="true" posX="2277.7002" posY="2476.7002" posZ="10.7" rotX="0" rotY="0"
+        rotZ="180.396" scale="1" color="0,0,0,245,245,245,0,0,0,0,0,0"></vehicle>
+    <vehicle id="vehicle (Police Ranger) (3)" sirens="false" landingGearDown="false"
+        plate="8ZS4 3TK" paintjob="3" dimension="0" interior="0" health="1000" alpha="255"
+        model="599" collisions="true" posX="2291" posY="2477" posZ="11.2" rotX="0" rotY="0"
+        rotZ="180.4" scale="1" color="0,0,0,245,245,245,0,0,0,0,0,0"></vehicle>
+    <vehicle id="vehicle (Police Ranger) (4)" sirens="false" landingGearDown="false"
+        plate="RJYP LBY" paintjob="3" dimension="0" interior="0" health="1000" alpha="255"
+        model="599" collisions="true" posX="2295.1001" posY="2477" posZ="11.2" rotX="0" rotY="0"
+        rotZ="180.396" scale="1" color="0,0,0,245,245,245,0,0,0,0,0,0"></vehicle>
 </map>
