@@ -1,0 +1,3 @@
+[submodule "[vendor]/dgs"]
+	path = [vendor]/dgs
+	url = https://github.com/thisdp/dgs.git
