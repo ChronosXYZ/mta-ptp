@@ -1,6 +1,27 @@
+local isReady = false
+local function notifyReady()
+    if isReady then return end
+    isReady = true
+    triggerServerEvent("onClientReady", resourceRoot)
+end
+
+local function onTransferVisibilityChange(isVisible)
+    if not isVisible then
+        removeEventHandler("onClientTransferBoxVisibilityChange", root, onTransferVisibilityChange)
+        notifyReady()
+    end
+end
+
 addEventHandler("onClientResourceStart", resourceRoot, function()
     setAmbientSoundEnabled("gunfire", false)
-    triggerServerEvent("onClientReady", resourceRoot)
+    fadeCamera(false, 0.0)
+    setPlayerHudComponentVisible("all", false)
+
+    if isTransferBoxActive() then
+        addEventHandler("onClientTransferBoxVisibilityChange", root, onTransferVisibilityChange)
+    else
+        notifyReady()
+    end
 end)
 
 addEvent("ptp:onRoundEnd", true)

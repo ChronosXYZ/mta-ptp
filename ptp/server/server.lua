@@ -1,5 +1,23 @@
 local teams = {}
 
+local function isPlayerReady(player)
+    return isElement(player) and getElementData(player, "ptp.ready") == true
+end
+
+local function setPlayerReady(player, ready)
+    setElementData(player, "ptp.ready", ready or nil, false)
+end
+
+local function getReadyPlayers()
+    local ready = {}
+    for _, player in ipairs(getElementsByType("player")) do
+        if isPlayerReady(player) then
+            table.insert(ready, player)
+        end
+    end
+    return ready
+end
+
 local function giveTeamWeapons(player, teamID)
     local weapons = Teams[teamID].weapons
     if not weapons then return end
@@ -94,15 +112,29 @@ local function onPlayerTeamSelected(player, teamID, skinID)
     triggerClientEvent(player, "onPlayerTeamSelectedSuccessful", resourceRoot)
 end
 
+local function getPresident()
+    local presTeam = teams[TEAM_PRESIDENT]
+    if not presTeam then return nil end
+    local presPlayers = getPlayersInTeam(presTeam)
+    return presPlayers and presPlayers[1] or nil
+end
+
 local function selectPresident()
-    local players = getElementsByType("player")
-    if #players == 0 then
-        return
+    if getPresident() then
+        return true
     end
-    local president = players[math.random(1, #players)]
+
+    local candidates = getReadyPlayers()
+    if #candidates == 0 then
+        outputDebugString("[GameRules] selectPresident: No ready players available to be President!", 2)
+        return false
+    end
+
+    local president = candidates[math.random(1, #candidates)]
     outputChatBox("You have been selected as the President for this round!", president, 255, 215, 0)
     outputDebugString("[GameRules] Player " .. tostring(getPlayerName(president)) .. " selected as President")
     onPlayerTeamSelected(president, TEAM_PRESIDENT, 147)
+    return true
 end
 
 local function onPlayerWasted(totalAmmo, killer, killerWeapon, bodypart)
@@ -140,16 +172,16 @@ end
 -- Round preparation: reset player teams and show class selection
 addEvent("ptp:onRoundPrepare", false)
 addEventHandler("ptp:onRoundPrepare", resourceRoot, function()
-    for _, player in ipairs(getElementsByType("player")) do
+    for _, player in ipairs(getReadyPlayers()) do
         setPlayerTeam(player, nil)
         enterTeamSelectMenu(player)
     end
 end)
 
--- Countdown tick: select President at 5 seconds remaining
+-- Countdown tick: select President starting at 5 seconds remaining, retrying each tick until selected
 addEvent("ptp:onCountdownTick", false)
 addEventHandler("ptp:onCountdownTick", resourceRoot, function(remainingSecs)
-    if remainingSecs == 5 then
+    if remainingSecs <= 5 and not getPresident() then
         selectPresident()
     end
 end)
@@ -157,6 +189,12 @@ end)
 -- Round start: unfreeze players and enable controls
 addEvent("ptp:onRoundStart", false)
 addEventHandler("ptp:onRoundStart", root, function(mapName)
+    if not getPresident() then
+        outputChatBox("Cannot start round without a President! Waiting for players...", root, 255, 100, 100)
+        RoundManager.setIdle()
+        return
+    end
+
     for _, player in ipairs(getElementsByType("player")) do
         if getPlayerTeam(player) ~= nil then
             setElementFrozen(player, false)
@@ -181,9 +219,17 @@ end)
 -- Player & World Events
 -- ============================================================================
 
+addEventHandler("onPlayerJoin", root, function()
+    setPlayerReady(source, false)
+    fadeCamera(source, false, 0.0)
+    setPlayerHudComponentVisible(source, "all", false)
+end)
+
 addEvent("onClientReady", true)
 addEventHandler("onClientReady", resourceRoot, function()
+    setPlayerReady(client, true)
     outputChatBox("Welcome to Protect The President!", client, 255, 255, 0)
+
     if RoundManager.is("idle") then
         RoundManager.startCountdown()
     else

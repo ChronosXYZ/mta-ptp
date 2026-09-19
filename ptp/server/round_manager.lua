@@ -24,21 +24,20 @@ local function clearAllTimers()
     breakTimer = nil
 end
 
-local function getActivePlayerCount(excludePlayer)
-    local count = 0
+local function hasReadyPlayers(excludePlayer)
     for _, player in ipairs(getElementsByType("player")) do
-        if player ~= excludePlayer then
-            count = count + 1
+        if player ~= excludePlayer and getElementData(player, "ptp.ready") == true then
+            return true
         end
     end
-    return count
+    return false
 end
 
-local function loadMapAndTransition()
+local function loadMap()
     clearAllTimers()
     MapManager.loadMap()
 
-    if #getElementsByType("player") > 0 then
+    if hasReadyPlayers() then
         stateMachine:enter_countdown()
     else
         stateMachine:set_idle()
@@ -156,7 +155,7 @@ function RoundManager.init()
             end,
 
             onloading = function()
-                loadMapAndTransition()
+                loadMap()
             end,
 
             onstatechange = function(_, evt, from, to)
@@ -165,7 +164,7 @@ function RoundManager.init()
         },
     })
 
-    loadMapAndTransition()
+    loadMap()
 end
 
 -- Lifecycle hooks
@@ -173,19 +172,9 @@ addEventHandler("onResourceStart", resourceRoot, function()
     RoundManager.init()
 end)
 
-addEventHandler("onPlayerJoin", root, function()
-    if RoundManager.is("idle") then
-        setTimer(function()
-            if RoundManager.is("idle") and #getElementsByType("player") > 0 then
-                RoundManager.startCountdown()
-            end
-        end, 5000, 1)
-    end
-end)
 
 addEventHandler("onPlayerQuit", root, function()
-    local remaining = getActivePlayerCount(source)
-    if remaining == 0 then
+    if not hasReadyPlayers(source) then
         if RoundManager.is("countdown") then
             outputDebugString("[RoundManager] All players left during countdown. Returning to idle.")
             RoundManager.setIdle()
